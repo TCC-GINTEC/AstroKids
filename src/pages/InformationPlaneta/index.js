@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, FlatList, StyleSheet ,ImageBackground } from 'react-native';
 
 export default function InformationPlaneta({ route, navigation }) {
   const { planeta } = route.params;
@@ -61,8 +61,57 @@ export default function InformationPlaneta({ route, navigation }) {
     },
   ];
 
-  const planetaData = planetas.find(p => p.title === planeta.title);
+  const getPlanetaImage = (title) => {
+    switch (title.toLowerCase()) {
+      case 'sol':
+        return require('../../../assets/sol.png');
+      case 'mercurio':
+        return require('../../../assets/mercurio.png');
+      case 'venus':
+        return require('../../../assets/venus.png');
+      case 'terra':
+        return require('../../../assets/terra.png');
+      case 'marte':
+        return require('../../../assets/marte.png');
+      case 'jupiter':
+        return require('../../../assets/jupiter.png');
+      case 'saturno':
+        return require('../../../assets/saturno.png');
+      case 'urano':
+        return require('../../../assets/urano.png');
+      case 'netuno':
+        return require('../../../assets/netuno.png');
+      default:
+        return null;
+    }
+  };
 
+  const getPlanetaBorda = (borda) => {
+    switch (borda.toLowerCase()) {
+      case 'sol':
+        return require('../../../assets/bordaSol.png');
+      case 'mercurio':
+          return require('../../../assets/bordaMercurio.png');
+      case 'venus':
+        return require('../../../assets/bordaVenus.png');
+      case 'terra':
+          return require('../../../assets/bordaTerra.png');
+      case 'marte':
+          return require('../../../assets/bordaMarte.png');
+      case 'jupiter':
+        return require('../../../assets/bordaJupiter.png');
+        case 'saturno':
+        return require('../../../assets/bordaSaturno.png');
+        case 'urano':
+        return require('../../../assets/bordaUrano.png');
+        case 'netuno':
+        return require('../../../assets/bordaNeturno.png');         
+      default:
+        return null;
+    }
+  } 
+
+  const planetaData = planetas.find(p => p.title === planeta.title);
   if (!planetaData) {
     return <Text>Planeta não encontrado</Text>;
   }
@@ -76,6 +125,9 @@ export default function InformationPlaneta({ route, navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{planetaData.title}</Text>
+      <ImageBackground source={getPlanetaBorda(planetaData.title)} style={styles.backgroundImage}>
+        <Image source={getPlanetaImage(planetaData.title)} style={styles.planetaImage} />
+      </ImageBackground>
       <Text style={styles.description}>{planetaData.description}</Text>
       <Button title="Voltar" onPress={() => navigation.goBack()} />
       
@@ -93,7 +145,6 @@ export default function InformationPlaneta({ route, navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -107,12 +158,25 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     marginVertical: 16,
+    textAlign: 'center',
   },
   imageContainer: {
     marginHorizontal: 10,
   },
   image: {
     width: 300,
-    height: 200,
+    height: 300,
+  },
+  backgroundImage: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',  // Centraliza o conteúdo dentro do ImageBackground
+    alignItems: 'center',      // Centraliza o conteúdo dentro do ImageBackground
+    marginBottom: 20,          // Espaçamento inferior
+  },
+  planetaImage: {
+    width: 200,
+    height: 200,  // Tamanho ajustável para a imagem do planeta
+    resizeMode: 'contain', // Ajusta a imagem para caber sem distorção
   },
 });
