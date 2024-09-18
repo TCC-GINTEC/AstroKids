@@ -7,7 +7,12 @@ import {
   Text,
   StatusBar,
   Image,
+  ImageBackground,
+  TouchableOpacity
 } from 'react-native';
+
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 
 const DATA = [
   {
@@ -28,51 +33,94 @@ const DATA = [
     description: 'Vênus é o segundo planeta a partir do Sol e é quase do mesmo tamanho da Terra. Ele é coberto por nuvens espessas.',
     img: require('../../../assets/venus.png')  // Use require aqui
   },
+  {
+    id: '4',
+    title: 'Terra',
+    description: 'A Terra é o único planeta onde sabemos que existe vida. Tem água, ar e a temperatura certa para que plantas, animais....',
+    img: require('../../../assets/terra.png')  // Use require aqui
+  },
+  {
+    id: '5',
+    title: 'Marte',
+    description: 'Marte é conhecido como o "planeta vermelho" por causa de sua cor. Ele tem montanhas, vales e desertos, e também tem calotas..',
+    img: require('../../../assets/marte.png')  // Use require aqui
+  },
+  {
+    id: '6',
+    title: 'Júpiter',
+    description: 'Júpiter é o maior planeta do sistema solar, com uma tempestade enorme chamada Grande Mancha Vermelha que é maior do que a Terra...',
+    img: require('../../../assets/jupiter.png')  // Use require aqui
+  },
+  {
+    id: '7',
+    title: 'Saturno',
+    description: 'Saturno é famoso por seus belos anéis feitos de gelo e rocha. Ele é outro gigante gasoso, como Júpiter, e é tão grande que..',
+    img: require('../../../assets/saturno.png')  // Use require aqui
+  },
+  {
+    id: '8',
+    title: 'Urano',
+    description: 'Urano é um planeta inclinado de lado, o que significa que ele gira de uma maneira bem diferente dos outros planetas. Ele tem uma cor azulada por causa do..',
+    img: require('../../../assets/urano.png')  // Use require aqui
+  },
+  {
+    id: '9',
+    title: 'Netuno',
+    description: 'Netuno é o planeta mais distante do Sol e é conhecido por seus ventos super fortes. Assim como Urano, Netuno tem uma cor azulada e muito ...',
+    img: require('../../../assets/netuno.png')  // Use require aqui
+  },
 ];
 
 
-const Item = ({dados}) => (
-  <View style={styles.item}>
+const Item = ({dados, navigation}) => (
+  <TouchableOpacity onPress={() => navigation.navigate('InformationPlaneta', { planeta: dados })} style={styles.item}>
     <View style={styles.containerPlaneta}>
-       <Image source={dados.img} style={styles.imagensPlaneta}/>
-       <Text style={styles.textoPlaneta}>{dados.title}</Text>
-       <Text style={styles.descricaoPlaneta}>{dados.description}</Text>
+      <Image source={dados.img} style={styles.imagensPlaneta} />
+      <Text style={styles.textoPlaneta}>{dados.title}</Text>
+      <Text style={styles.descricaoPlaneta}>{dados.description}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
-export default function SistemaSolar(){
+export default function SistemaSolar({navigation}){
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Sistema Solar</Text>
-      <SafeAreaView>
-        <FlatList
-          data={DATA}
-          horizontal={true}
-          pagingEnabled={true}
-          snapToAlignment='center'
-          snapToInterval={330}      
-          decelerationRate='fast'
-          renderItem={({item}) => <Item dados={item} />}
-          keyExtractor={item => item.id}
-        />
-      </SafeAreaView>
+      <ImageBackground source={require('../../../assets/background1.png')} resizeMode="cover" style={styles.image}>
+        <Text style={styles.tituloPlaneta}>Sistema Solar</Text>
+        <SafeAreaView style={{paddingTop:40}}>
+          <FlatList
+            data={DATA}
+            horizontal={true}
+            pagingEnabled={true}
+            snapToAlignment='center'
+            snapToInterval={330}      
+            decelerationRate='fast'
+            renderItem={({item}) => <Item dados={item} navigation={navigation}/>}
+            keyExtractor={item => item.id}
+          />
+        </SafeAreaView>
+        <Text style={styles.textoExplicacao}>Arraste os planetas para o lado</Text>
+      </ImageBackground>
     </View>
   );
 };
 
+
+
 const styles = StyleSheet.create({
   container:{
+    justifycenter:'center',
+    alingItems:'center',
     paddingTop:40,
   },
-  titulo:{
-    fontSize:25,
+  tituloPlaneta:{
+    fontSize:30,
     fontWeight:'bold',
     color:'white',
-    textAling:'center',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   item: {
-    backgroundColor: '#f9c2ff',
     padding: 20,
     width:330,
     alignItems:'center',
@@ -84,16 +132,20 @@ const styles = StyleSheet.create({
   },
   containerPlaneta:{
     backgroundColor:'white',
-    width:250,
-    height:270,
+    postion:'relative',
+    top:10,
+    width:230,
+    height:300,
     borderRadius: 20,
     alignItems:'center',
+    boxShadow:'10px 20px 30px black'
   },
   imagensPlaneta:{
     postion:'absolute',
-    top:-30,    
-    width:150,
-    height:150,
+    zIndex:10,
+    top:-43,    
+    width:180,
+    height:180,
   },
   textoPlaneta:{
     marginTop:-20,
@@ -103,6 +155,13 @@ const styles = StyleSheet.create({
 descricaoPlaneta:{
   width:200,
   textAlign:'center',
+  },
+  textoExplicacao:{
+    textAlign:'center',
+    width:250,
+    color:'white',
+    fontSize:25,
+    margin:'auto'
   }
 });
 
