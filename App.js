@@ -12,8 +12,8 @@ export default function App() {
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName="SistemaSolar">
-      <Stack.Screen name="SistemaSolar"           options={{ headerShown: false }} component={SistemaSolar} />
-      <Stack.Screen name="InformationPlaneta" component={InformationPlaneta} />
+      <Stack.Screen name="SistemaSolar"options={{ headerShown: false }} component={SistemaSolar} />
+      <Stack.Screen name="InformationPlaneta"  component={InformationPlaneta} />
     </Stack.Navigator>
   </NavigationContainer>
   );
