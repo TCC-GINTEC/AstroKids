@@ -19,7 +19,8 @@
     "react-native-screens": "^3.31.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@iconify/react": "^5.0.2"
   },
   "private": true
 }
