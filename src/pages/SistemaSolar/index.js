@@ -109,6 +109,7 @@ export default function SistemaSolar({navigation}){
 
 const styles = StyleSheet.create({
   container:{
+    flex:1,
     justifycenter:'center',
     alingItems:'center',
     paddingTop:40,
@@ -130,6 +131,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+  safeArea: {
+    flex: 1, 
+    paddingTop: 40,
+  },
   containerPlaneta:{
     backgroundColor:'white',
     postion:'relative',
@@ -139,6 +144,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems:'center',
     boxShadow:'10px 20px 30px black'
+  },
+  image:{
+    flex: 1, // Adicionado
+    justifyContent: 'center',
   },
   imagensPlaneta:{
     postion:'absolute',
