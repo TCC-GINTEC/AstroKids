@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, Button, Image, FlatList, StyleSheet ,ImageBackground ,ScrollView} from 'react-native';
-import type { SVGProps } from 'react';
+import { View, Text, Button, Image, FlatList, StyleSheet ,ImageBackground ,ScrollView,TouchableOpacity} from 'react-native';
 
 export default function InformationPlaneta({ route, navigation }) {
   const { planeta } = route.params;
@@ -119,22 +118,24 @@ export default function InformationPlaneta({ route, navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.imageContainer}>
-      <Image source={item} style={styles.image} />
+      <Image source={item} style={styles.image} style={{width:300,height:150, borderRadius: 10}} />
     </View>
   );
 
   const isSaturno = planetaData.title.toLowerCase() === 'saturno'; // Verifica se o planeta é Saturno
 
-
   return (
-    <ScrollView  style={styles.container,styles.scrollView} >
-      <ImageBackground source={getPlanetaBorda(planetaData.title)} style={styles.backgroundImage}>
-        <Image source={getPlanetaImage(planetaData.title)} style={styles.planetaImage} style={[styles.planetaImage, isSaturno && styles.saturnoImage]}/>
-      </ImageBackground>
+    <ScrollView  style={styles.container} >
+      <View style={styles.box}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={require('../../../assets/seta.png')}   style={{ transform: [{ rotate: '-180deg' }], width:30, height:30, marginLeft:10,marginTop:40,}}/>
+        </TouchableOpacity>
+        <ImageBackground source={getPlanetaBorda(planetaData.title)} style={styles.backgroundImage}>
+          <Image source={getPlanetaImage(planetaData.title)} style={styles.planetaImage} style={[styles.planetaImage, isSaturno && styles.saturnoImage]}/>
+        </ImageBackground>
+      </View>
       <Text style={styles.title}>{planetaData.title}</Text>
-      <Text style={styles.description}>{planetaData.description}</Text>
-      <Button title="Voltar" onPress={() => navigation.goBack()} />
-      
+      <Text style={styles.description}>{planetaData.description}</Text>      
       {/* Exibição das imagens usando FlatList */}
       <FlatList
         data={planetaData.imagens}
@@ -145,6 +146,8 @@ export default function InformationPlaneta({ route, navigation }) {
         decelerationRate='fast'
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
+        style={styles.flatList}
+        contentContainerStyle={styles.flatListContent}
       />
     </ScrollView>
   );
@@ -152,9 +155,17 @@ export default function InformationPlaneta({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    alignItems: 'center',
-
+    alingItems: 'center',
+  },
+  flatList: {
+    marginBottom: 30, // Adiciona espaço abaixo do FlatList
+  },
+  flatListContent: {
+    paddingBottom: 20, // Espaço entre os itens do conteúdo e a parte inferior
+  },
+  box:{
+    alignItems:'start',
+    flexDirection:'row' 
   },
   title: {
     fontSize: 50,
