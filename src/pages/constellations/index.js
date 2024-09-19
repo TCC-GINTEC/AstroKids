@@ -77,7 +77,7 @@ export default function Constellations({navigation}) {
 
   return (
     <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
-      <TouchableOpacity onPress={() => navigation.navigate()} style={styles.botaoVoltar}>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.botaoVoltar}>
               <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao}/>
       </TouchableOpacity>
       <View style={styles.container}>

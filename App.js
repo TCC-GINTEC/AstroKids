@@ -15,7 +15,7 @@ export default function App() {
     <NavigationContainer>
     <Stack.Navigator initialRouteName="SistemaSolar">
       <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
-      <Stack.Screen name="constellations" options={{ headerShown: false }} component={Constellations} />
+      <Stack.Screen name="Constellations" options={{ headerShown: false }} component={Constellations} />
       <Stack.Screen name="SolarSystem" options={{ headerShown: false }} component={SolarSystem} />
       <Stack.Screen name="InformationPlaneta"  options={{ headerShown: false }} component={InformationPlaneta} />
     </Stack.Navigator>

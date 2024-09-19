@@ -31,7 +31,7 @@ export default function Home({ navigation }) {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.box3}>
+        <TouchableOpacity style={styles.box3} onPress={() => navigation.navigate('Constellations')}>
           <View style={styles.containerText}> 
             <View>
               <Text style={styles.title2}>Historias das Constelações </Text>

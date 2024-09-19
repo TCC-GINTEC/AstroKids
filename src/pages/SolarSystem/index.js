@@ -86,6 +86,9 @@
     return (
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/background1.png')} resizeMode="cover" style={styles.image}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.botaoVoltar}>
+              <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao}/>
+          </TouchableOpacity>
           <Text style={styles.tituloPlaneta}>Sistema Solar</Text>
           <SafeAreaView style={{paddingTop:40}}>
             <FlatList
@@ -169,7 +172,12 @@
       color:'white',
       fontSize:25,
       margin:'auto'
-    }
+    },
+    botaoVoltar:{
+      position:'absolute',
+      top:40,
+      left:40,
+      width:40,
+      height:40,
+    },
   });
-
-  ;
