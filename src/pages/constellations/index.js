@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
+import {useState, useEffect} from 'react';
 
 const { width } = Dimensions.get('window');  // Obtenha a largura da tela
 
@@ -40,23 +41,23 @@ const DATA = [
   },
   {
     id: '5',
-    title: 'Marte',
+    title: 'Leão',
     description: 'A constelação dos leões',
     img: require('../../../assets/constelacao-leao.png')
   }
 ];
 
-const Item = ({dados, navigation}) => (
-  <TouchableOpacity onPress={() => navigation.navigate('InformationPlaneta', { planeta: dados })} style={styles.item}>
-    <View style={styles.box1} >
+const Item = ({dados, setInformacao}) => (
+  <TouchableOpacity onPress={() => setInformacao(dados)} style={styles.item}>
+    <View style={styles.box1}>
       <View style={styles.circleImage}>
-        <Image source={dados.img} style={ styles.imageConstellations} />
+        <Image source={dados.img} style={styles.imageConstellations} />
       </View>
       <View style={styles.containerTexto}>
         <Text style={styles.textTitle}>{dados.title}</Text>
-       <Text style={styles.textDescription}>{dados.description}</Text>
+        <Text style={styles.textDescription}>{dados.description}</Text>
       </View>
-      <View style={{flexDirection:'row',gap:10, paddingLeft:30}}>
+      <View style={{flexDirection: 'row', gap: 10, paddingLeft: 30}}>
         <Text style={styles.textoExplicacao}>Aperte para ver mais</Text>
         <Image source={require('../../../assets/setinha.png')} style={styles.seta} />
       </View>
@@ -66,31 +67,59 @@ const Item = ({dados, navigation}) => (
   </TouchableOpacity>
 );
 
-export default function SistemaSolar({navigation}){
+export default function SistemaSolar({navigation}) {
+  const [informacao, setInformacao] = useState(null);
+
   return (
-    <View style={styles.container}>
-      <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
-        <Text style={styles.tituloPlaneta}>História das constelações</Text>
-        <SafeAreaView style={styles.safeArea}>
-          <FlatList
-            data={DATA}
-            horizontal={true}
-            pagingEnabled={true}
-            snapToAlignment='center'
-            snapToInterval={width}  // Faz o snap de cada item ocupar a largura total da tela
-            decelerationRate='fast'
-            renderItem={({item}) => <Item dados={item} navigation={navigation}/>}
-            keyExtractor={item => item.id}
-          />
-        </SafeAreaView>
-        <Text>Arraste os planetas para o lado</Text>
-      </ImageBackground>
-    </View>
+    <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
+      <View style={styles.container}>
+        {informacao == null ? (
+          <View> 
+            <Text style={styles.tituloPlaneta}>História das constelações</Text>
+            <SafeAreaView style={styles.safeArea}>
+              <FlatList
+                data={DATA}
+                horizontal={true}
+                pagingEnabled={true}
+                snapToAlignment='center'
+                snapToInterval={width}
+                decelerationRate='fast'
+                renderItem={({item}) => <Item dados={item} setInformacao={setInformacao} />}
+                keyExtractor={item => item.id}
+              />
+            </SafeAreaView>
+            <Text>Arraste os planetas para o lado</Text>
+          </View>
+        ) : (
+          <View style={styles.apresentacao}>
+            <Image source={informacao.img} style={styles.apresentacaoImagem} />
+            <Text style={styles.apresentacaoTexto}>{informacao.description}</Text>
+            <TouchableOpacity onPress={() => setInformacao(null)} style={styles.botaoVoltar}>
+              <Text style={styles.textoBotao}>Voltar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  apresentacao: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    // Adicione outras propriedades, se necessário
+  },
+  innerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -129,10 +158,6 @@ const styles = StyleSheet.create({
   imageConstellations:{
     width:100,
     height:100,
-  },
-  image: {
-    flex: 1,
-    justifyContent: 'center',
   },
   item: {
     width: width,
@@ -190,5 +215,8 @@ const styles = StyleSheet.create({
     position:'absolute',
     top:-50,
     left:30,
+  },  
+  apresentacao:{
+    flex:1,
   }
 });
