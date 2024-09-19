@@ -18,31 +18,36 @@ const DATA = [
   {
     id: '1',
     title: 'Orion',
-    description: 'A constelação dos caçadores.',
+    resume:'A constelação dos caçadores',
+    description: 'Orion é uma das constelações mais fáceis de ver no céu noturno. Ela tem a forma de um caçador segurando um arco e flecha. No meio de Orion, existem três estrelas brilhantes em linha reta, que são chamadas de "Cinturão de Orion". Diz a lenda que Orion era um caçador forte e corajoso, e Zeus, o rei dos deuses, o colocou no céu para sempre. Agora, Orion nos lembra de olhar para as estrelas e sonhar com aventuras.',
     img: require('../../../assets/constelacao-orion.png')
   },
   {
     id: '2',
     title: 'Ursa Maior',
-    description: 'A constelação dos ursos',
+    resume:'A constelação dos ursos',
+    description: 'Ursa Maior é uma constelação que parece um grande urso no céu. Ela é famosa porque suas sete estrelas principais formam um desenho que se parece com uma concha, conhecida como "Grande Carro" ou "Grande Cadeira". Na mitologia, Ursa Maior era uma bela ninfa chamada Calisto, que foi transformada em um urso por uma deusa ciumenta. Para protegê-la, Zeus a colocou no céu, onde ela brilha para sempre.',
     img: require('../../../assets/constelacao-ursamaior.png')
   },
   {
     id: '3',
     title: 'Cruz do Sul',
-    description: 'A constelação das cruzes',
+    resume:'A constelação das cruzes',
+    description: 'A Cruz do Sul é uma constelação importante no hemisfério sul e é formada por quatro estrelas brilhantes que parecem uma cruz. Os navegadores antigos usavam a Cruz do Sul para encontrar o caminho durante as viagens. Dizem que a cruz foi colocada no céu por deuses para guiar as pessoas em suas jornadas e proteger aqueles que se perdem.',
     img: require('../../../assets/constelacao-cruzdosul.png')
   },
   {
     id: '4',
     title: 'Escorpião',
-    description: 'A constelação dos escopiões',
+    resume:'A constelação dos escopiões',
+    description: 'A constelação de Escorpião tem a forma de um escorpião, com sua cauda curva e brilhante. Segundo a mitologia, o escorpião foi enviado pela deusa Artemis para perseguir o caçador Orion, e depois que ele cumpriu sua missão, foi colocado no céu. Agora, Escorpião brilha no céu de verão, lembrando a todos de sua força e astúcia.',
     img: require('../../../assets/constelacao-escorpiao.png')
   },
   {
     id: '5',
     title: 'Leão',
-    description: 'A constelação dos leões',
+    resume:'A constelação dos leões',
+    description: 'Leão é uma constelação que se parece com um leão, o rei dos animais. Na mitologia, Leão representa o poderoso Leão de Nemeia, uma criatura que Hércules derrotou como parte de suas doze tarefas. Depois de sua vitória, o leão foi colocado no céu como uma constelação, e agora ele vigia as estrelas com seu rugido silencioso.',
     img: require('../../../assets/constelacao-leao.png')
   }
 ];
@@ -55,7 +60,7 @@ const Item = ({dados, setInformacao}) => (
       </View>
       <View style={styles.containerTexto}>
         <Text style={styles.textTitle}>{dados.title}</Text>
-        <Text style={styles.textDescription}>{dados.description}</Text>
+        <Text style={styles.textDescription1}>{dados.resume}</Text>
       </View>
       <View style={{flexDirection: 'row', gap: 10, paddingLeft: 30}}>
         <Text style={styles.textoExplicacao}>Aperte para ver mais</Text>
@@ -67,15 +72,18 @@ const Item = ({dados, setInformacao}) => (
   </TouchableOpacity>
 );
 
-export default function SistemaSolar({navigation}) {
+export default function Constellations({navigation}) {
   const [informacao, setInformacao] = useState(null);
 
   return (
     <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
+      <TouchableOpacity onPress={() => navigation.navigate()} style={styles.botaoVoltar}>
+              <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao}/>
+      </TouchableOpacity>
       <View style={styles.container}>
         {informacao == null ? (
           <View> 
-            <Text style={styles.tituloPlaneta}>História das constelações</Text>
+            <Text style={styles.tituloConstelacao}>História das constelações</Text>
             <SafeAreaView style={styles.safeArea}>
               <FlatList
                 data={DATA}
@@ -92,11 +100,14 @@ export default function SistemaSolar({navigation}) {
           </View>
         ) : (
           <View style={styles.apresentacao}>
-            <Image source={informacao.img} style={styles.apresentacaoImagem} />
-            <Text style={styles.apresentacaoTexto}>{informacao.description}</Text>
-            <TouchableOpacity onPress={() => setInformacao(null)} style={styles.botaoVoltar}>
-              <Text style={styles.textoBotao}>Voltar</Text>
+            <TouchableOpacity onPress={() => { console.log("Botão pressionado!"); setInformacao(null); }} style={styles.botaoVoltar}>
+              <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao}/>
             </TouchableOpacity>
+            <Image source={informacao.img} style={styles.apresentacaoImagem} />
+            <View style={styles.box4}>
+              <Text style={{fontSize:50, fontWeight:'bold'}}>{informacao.title}</Text>
+              <Text style={styles.textDescription2}>{informacao.description}</Text>
+            </View>
           </View>
         )}
       </View>
@@ -115,32 +126,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   apresentacao: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    // Adicione outras propriedades, se necessário
+    position:'relative',
+    flex: 1,
+    width:'100%',
+    justifyContent: 'flex-start', // Muda para flex-start
+    alignItems: 'center', // Mantenha centralizado horizontalmente se necessário
   },
   innerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  tituloPlaneta: {
+  tituloConstelacao: {
     fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
-    marginBottom: 20,
+    marginTop:80
   },
   textTitle:{
     fontSize:35,
     fontWeight:'bold'
   },
   containerTexto:{
-    borderWidth:1,
     position:'relative',
     top:-50,
   },
-  textDescription:{
+  textDescription1:{
+    fontSize:20,
+  },
+  textDescription2:{
     fontSize:18,
   },
   circleImage:{
@@ -154,6 +169,13 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
     backgroundColor:'#21145c',
+    shadowOffset: {
+    width: 0,
+    height: 0,  // Ajuste a altura da sombra
+  },
+  shadowOpacity: 0.80, // Opacidade da sombra
+  shadowRadius: 1,   // Raio da sombra
+  elevation: 1,        // Para Android
   },
   imageConstellations:{
     width:100,
@@ -203,6 +225,16 @@ const styles = StyleSheet.create({
     zIndex: 8,  // Mantém o box3 abaixo do box2
     marginTop: -120,  // Ajusta o deslocamento vertical
   },
+  box4: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height:350,
+    backgroundColor: 'white',
+    padding: 20,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
   textoExplicacao: {
     textAlign: 'center',
     position:'absolute',
@@ -216,7 +248,16 @@ const styles = StyleSheet.create({
     top:-50,
     left:30,
   },  
-  apresentacao:{
-    flex:1,
+  botaoVoltar:{
+    position:'absolute',
+    top:40,
+    left:40,
+    width:40,
+    height:40,
+  },
+  apresentacaoImagem:{
+    marginTop:50,
+    width:250, 
+    height:240,
   }
 });
