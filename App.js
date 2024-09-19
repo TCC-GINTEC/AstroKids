@@ -5,8 +5,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
  import SolarSystem from './src/pages/SolarSystem'
  import { NavigationContainer } from '@react-navigation/native';
  import InformationPlaneta from './src/pages/InformationPlaneta/'
- import constellations from './src/pages/constellations/'
-import Home from './src/pages/Home';
+ import Constellations from './src/pages/Constellations/'
+ import Home from './src/pages/Home';
+ 
  const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
     <NavigationContainer>
     <Stack.Navigator initialRouteName="SistemaSolar">
       <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
-      <Stack.Screen name="constellations" options={{ headerShown: false }} component={constellations} />
+      <Stack.Screen name="constellations" options={{ headerShown: false }} component={Constellations} />
       <Stack.Screen name="SolarSystem" options={{ headerShown: false }} component={SolarSystem} />
       <Stack.Screen name="InformationPlaneta"  options={{ headerShown: false }} component={InformationPlaneta} />
     </Stack.Navigator>
