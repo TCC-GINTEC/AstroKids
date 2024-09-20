@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, Image, FlatList, StyleSheet ,ImageBackground ,ScrollView,TouchableOpacity} from 'react-native';
 
-export default function InformationPlaneta({ route, navigation }) {
+export default function Planeta({ route, navigation }) {
   const { planeta } = route.params;
 
   const planetas = [
@@ -131,12 +131,14 @@ export default function InformationPlaneta({ route, navigation }) {
           <Image source={require('../../../assets/seta.png')}   style={{ transform: [{ rotate: '-180deg' }], width:30, height:30, marginLeft:10,marginTop:40,}}/>
         </TouchableOpacity>
         <ImageBackground source={getPlanetaBorda(planetaData.title)} style={styles.backgroundImage}>
-          <Image source={getPlanetaImage(planetaData.title)} style={styles.planetaImage} style={[styles.planetaImage, isSaturno && styles.saturnoImage]}/>
+          <Image source={getPlanetaImage(planetaData.title)} style={[styles.planetaImage, isSaturno && styles.saturnoImage]}/>
         </ImageBackground>
       </View>
       <Text style={styles.title}>{planetaData.title}</Text>
       <Text style={styles.description}>{planetaData.description}</Text>      
       {/* Exibição das imagens usando FlatList */}
+
+      <Text style={{...styles.title2,marginBottom: 20}}>Galeria de imagens</Text>
       <FlatList
         data={planetaData.imagens}
         horizontal={true}
@@ -172,12 +174,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft:25,
   },
-  description: {
+  title2: {
     fontSize: 20,
+    fontWeight: '700',
+    marginLeft:25,
+  },
+  description: {
+    fontSize: 16,
     marginVertical: 16,
     width:'85%',
     margin:'auto',
     textAlign: 'justify',
+    opacity:0.7
   },
   imageContainer: {
     marginHorizontal: 10,
