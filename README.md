@@ -19,7 +19,7 @@ Para executar o projeto AstroKids, siga os passos abaixo:
 2. Execute o seguinte comando para clonar o repositório:
 
 ```Bash
- git clone https://github.com/seu-usuario/astro-kids.git
+ git clone https://github.com/TCC-GINTEC/AstroKids.git
 ```
 3.Navegue para o diretório do projeto:
 
