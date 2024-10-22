@@ -8,43 +8,43 @@ const Stack = createNativeStackNavigator();
 export default function Home({ navigation }) {
   return (
 
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Olá, seja Bem Vindo</Text>
+      <ScrollView contentContainerStyle={screenstyle.container}>
+        <Text style={{...screenstyle.header,marginTop:55}}>Olá, seja Bem Vindo</Text>
         
-        <TouchableOpacity style={styles.box1}>
-          <View style={styles.containerText}> 
+        <TouchableOpacity style={screenstyle.box1}>
+          <View style={screenstyle.containerText}> 
             <View>
-              <Text style={styles.title}>Quiz</Text>
-              <Text style={styles.text}>Participe e descubra curiosidades sobre o espaço</Text>
+              <Text style={screenstyle.title}>Quiz</Text>
+              <Text style={{...screenstyle.text, fontSize: 20, color: "#ffe900"}}>Em construção</Text>
             </View>
-            <Image source={require('../../../assets/home-imagem1.png')}  style={styles.imagem1}/>
+            <Image source={require('../../../assets/home-imagem1.png')}  style={screenstyle.imagem1}/>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.box2} onPress={() => navigation.navigate('SolarSystem')}>
-          <View style={styles.containerText}> 
+        <TouchableOpacity style={screenstyle.box2} onPress={() => navigation.navigate('SistemaSolar')}>
+          <View style={screenstyle.containerText}> 
             <View>
-              <Text style={styles.title}>Sistema Solar</Text>
-              <Text style={styles.text}>Conheças os planetas </Text>
+              <Text style={screenstyle.title}>Sistema Solar</Text>
+              <Text style={screenstyle.text}>Conheças os planetas </Text>
             </View>
-            <Image source={require('../../../assets/home-imagem2.png')}  style={styles.imagem2}/>
+            <Image source={require('../../../assets/home-imagem2.png')}  style={screenstyle.imagem2}/>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.box3} onPress={() => navigation.navigate('Constellations')}>
-          <View style={styles.containerText}> 
+        <TouchableOpacity style={screenstyle.box3} onPress={() => navigation.navigate('Constelacoes')}>
+          <View style={screenstyle.containerText}> 
             <View>
-              <Text style={styles.title2}>Historias das Constelações </Text>
-              <Text style={styles.text}>Descubras os misterios das constelações</Text>
+              <Text style={screenstyle.title2}>Historias das Constelações </Text>
+              <Text style={screenstyle.text}>Descubras os misterios das constelações</Text>
             </View>
-            <Image source={require('../../../assets/home-imagem3.png')}  style={styles.imagem2}/>
+            <Image source={require('../../../assets/home-imagem3.png')}  style={screenstyle.imagem2}/>
           </View>
         </TouchableOpacity>
       </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+const screenstyle = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -62,26 +62,30 @@ const styles = StyleSheet.create({
   box1: {
     padding: 20,
     width: '95%',
-    borderRadius: 10,
+    borderRadius: 20,
     height: 200,
-    backgroundColor: '#70399C',
-    marginBottom: 16,  // Added some space between boxes EF065D
+    backgroundColor: '#000', // Fundo preto
+    opacity: 0.6, // Torna o box meio apagado
+    marginBottom: 16,
+    overflow: 'hidden',  
   },
   box2: {
-    padding: 20,
+    padding: 20,    
     width: '95%',
-    borderRadius: 10,
+    borderRadius: 20,
     height: 200,
     backgroundColor: '#0D1A2D',
-    marginBottom: 16,  // Added some space between boxes
+    marginBottom: 16,
+    overflow:'hidden'
   },
   box3: {
-    padding: 20,
+    padding: 20,    
     width: '95%',
-    borderRadius: 10,
+    borderRadius: 20,
     height: 200,
     backgroundColor: '#EF065D',
-    marginBottom: 16,  // Added some space between boxes
+    marginBottom: 16,  
+    overflow:'hidden'
   },
   containerText: {
     width: 200,
@@ -108,7 +112,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'left',  // Fixed typo from 'textAling'
     color: 'white',
-    fontSize: 16,
+    fontSize: 13,
   },
 
 });
