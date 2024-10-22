@@ -2,20 +2,27 @@ import { View, Text, StyleSheet, Image, ScrollView ,TouchableOpacity} from 'reac
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { useAccessibility } from '../../context/accessibilityContext/';
+import { IoMenu } from "react-icons/io5";
 
 const Stack = createNativeStackNavigator();
 
 export default function Home({ navigation }) {
+  const { fontSize, titleFontSize, isDarkMode } = useAccessibility();
+
   return (
 
-      <ScrollView contentContainerStyle={screenstyle.container}>
-        <Text style={{...screenstyle.header,marginTop:55}}>Olá, seja Bem Vindo</Text>
+      <ScrollView contentContainerStyle={screenstyle.container} style={{backgroundColor: isDarkMode ? '#333' : '#FFF' }}>
+        <TouchableOpacity>
+           <IoMenu />
+        </TouchableOpacity>
+        <Text style={{...screenstyle.header,marginTop:55}} >Olá, seja Bem Vindo</Text>
         
         <TouchableOpacity style={screenstyle.box1}>
           <View style={screenstyle.containerText}> 
             <View>
-              <Text style={screenstyle.title}>Quiz</Text>
-              <Text style={{...screenstyle.text, fontSize: 20, color: "#ffe900"}}>Em construção</Text>
+              <Text style={screenstyle.title} >Quiz</Text>
+              <Text style={{...screenstyle.text, fontSize: fontSize , color: "#ffe900"}}>Em construção</Text>
             </View>
             <Image source={require('../../../assets/home-imagem1.png')}  style={screenstyle.imagem1}/>
           </View>
