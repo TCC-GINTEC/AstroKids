@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { useAccessibility } from '../../context/accessibilityContext/';
+import { useAccessibility } from '../../context/AccessibilityContext/';
 
-const Profile = () => {
+const Perfil = () => {
   const { fontSize, titleFontSize, increaseFontSize, decreaseFontSize, isDarkMode } = useAccessibility();
 
   return (
@@ -17,4 +17,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Perfil;
