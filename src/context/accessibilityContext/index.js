@@ -8,21 +8,21 @@ const AccessibilityContext = createContext();
 export const AccessibilityProvider = ({ children }) => {
   const [fontSize, setFontSize] = useState(16);
   const [titleFontSize, setTitleFontSize] = useState(20);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isHighContrast, setIsHighContrast] = useState(false);
 
   // Funções para aumentar e diminuir o tamanho da fonte
   const increaseFontSize = () => {
     setFontSize((prevSize) => {
       const newSize = prevSize + 2;
-      saveFontSize(newSize); // Salva o novo tamanho
+      saveFontSize(newSize);
       return newSize;
     });
   };
 
   const decreaseFontSize = () => {
     setFontSize((prevSize) => {
-      const newSize = Math.max(prevSize - 2, 10); // Tamanho mínimo
-      saveFontSize(newSize); // Salva o novo tamanho
+      const newSize = Math.max(prevSize - 2, 10);
+      saveFontSize(newSize);
       return newSize;
     });
   };
@@ -30,7 +30,7 @@ export const AccessibilityProvider = ({ children }) => {
   const saveFontSize = async (size) => {
     try {
       await AsyncStorage.setItem('@fontSize', JSON.stringify(size));
-      await AsyncStorage.setItem('@titleFontSize', JSON.stringify(size + 4)); // Tamanho do título
+      await AsyncStorage.setItem('@titleFontSize', JSON.stringify(size + 4));
     } catch (e) {
       console.error('Failed to save font size:', e);
     }
@@ -51,8 +51,34 @@ export const AccessibilityProvider = ({ children }) => {
     }
   };
 
+  const toggleHighContrast = () => {
+    setIsHighContrast((prev) => !prev);
+    saveHighContrast(!isHighContrast);
+  };
+
+  const saveHighContrast = async (isHighContrast) => {
+    try {
+      await AsyncStorage.setItem('@isHighContrast', JSON.stringify(isHighContrast));
+    } catch (e) {
+      console.error('Failed to save high contrast preference:', e);
+    }
+  };
+
+  const loadHighContrast = async () => {
+    try {
+      const savedHighContrast = await AsyncStorage.getItem('@isHighContrast');
+      if (savedHighContrast) {
+        setIsHighContrast(JSON.parse(savedHighContrast));
+      }
+    } catch (e) {
+      console.error('Failed to load high contrast preference:', e);
+    }
+  };
+
+
   useEffect(() => {
-    loadFontSize(); // Carrega o tamanho da fonte ao iniciar
+    loadFontSize();
+    loadHighContrast();
   }, []);
 
   return (
@@ -62,8 +88,8 @@ export const AccessibilityProvider = ({ children }) => {
         titleFontSize,
         increaseFontSize,
         decreaseFontSize,
-        isDarkMode,
-        setIsDarkMode,
+        isHighContrast,
+        toggleHighContrast,
       }}
     >
       {children}

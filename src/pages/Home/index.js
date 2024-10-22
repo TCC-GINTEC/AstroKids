@@ -8,21 +8,26 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const Stack = createNativeStackNavigator();
 
 export default function Home({ navigation }) {
-  const { fontSize, titleFontSize, isDarkMode } = useAccessibility();
+  const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
+
+  // Definindo as cores dependendo do modo de acessibilidade
+  const backgroundColor = isHighContrast ? '#000' : '#FFF';
+  const textColor = isHighContrast ? '#FFF' : '#000';
 
   return (
+    <ScrollView contentContainerStyle={{ ...screenstyle.container, backgroundColor }}>
 
-    <ScrollView contentContainerStyle={screenstyle.container} style={{ backgroundColor: isDarkMode ? '#333' : '#FFF' }}>
       <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-        <Icon name="menu" size={30} color="black" />
+        <Icon name="menu" size={30} color={textColor} />
       </TouchableOpacity>
-      <Text style={{ ...screenstyle.header, marginTop: 55 }} >Olá, seja Bem Vindo</Text>
+
+      <Text style={{ ...screenstyle.header, color: 'white', marginTop: 55 }}>Olá, seja Bem Vindo</Text>
 
       <TouchableOpacity style={screenstyle.box1}>
         <View style={screenstyle.containerText}>
           <View>
-            <Text style={screenstyle.title}>Quiz</Text>
-            <Text style={{ ...screenstyle.text, fontSize: fontSize, color: "#ffe900",  fontWeight: 'bold' }}>Em construção</Text>
+            <Text style={{ ...screenstyle.title, color: 'white' }}>Quiz</Text>
+            <Text style={{ ...screenstyle.text, fontSize: fontSize, color: "#ffe900", fontWeight: 'bold' }}>Em construção</Text>
           </View>
           <Image source={require('../../../assets/home-imagem1.png')} style={screenstyle.imagem1} />
         </View>
@@ -31,8 +36,8 @@ export default function Home({ navigation }) {
       <TouchableOpacity style={screenstyle.box2} onPress={() => navigation.navigate('SistemaSolar')}>
         <View style={screenstyle.containerText}>
           <View>
-            <Text style={screenstyle.title}>Sistema Solar</Text>
-            <Text style={screenstyle.text} style={{ fontSize:fontSize,color: "#ffe900"}} >Conheças os planetas </Text>
+            <Text style={{ ...screenstyle.title, color: 'white' }}>Sistema Solar</Text>
+            <Text style={{ ...screenstyle.text, fontSize: fontSize, color: "#ffe900" }}>Conheça os planetas </Text>
           </View>
           <Image source={require('../../../assets/home-imagem2.png')} style={screenstyle.imagem2} />
         </View>
@@ -41,8 +46,8 @@ export default function Home({ navigation }) {
       <TouchableOpacity style={screenstyle.box3} onPress={() => navigation.navigate('Constelacoes')}>
         <View style={screenstyle.containerText}>
           <View>
-            <Text style={screenstyle.title2}>Historias das Constelações </Text>
-            <Text style={screenstyle.text} style={{fontSize:fontSize,color: "#ffe900",  fontWeight: 'bold' }}>Descubras os misterios das constelações</Text>
+            <Text style={{ ...screenstyle.title2, color: 'white' }}>Histórias das Constelações </Text>
+            <Text style={{ ...screenstyle.text, fontSize: fontSize, color: "#ffe900", fontWeight: 'bold' }}>Descubra os mistérios das constelações</Text>
           </View>
           <Image source={require('../../../assets/home-imagem3.png')} style={screenstyle.imagem2} />
         </View>
@@ -55,13 +60,12 @@ const screenstyle = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',  // Fixed typo from 'alingItems'
+    alignItems: 'center',
     padding: 16,
   },
   header: {
     marginTop: 40,
-    fontSize: 34,  // Optional: Style for the header text
-    color: '#0D1A2D',
+    fontSize: 34,
     marginRight: 20,
     fontWeight: 'bold',
     marginBottom: 16,
@@ -71,8 +75,8 @@ const screenstyle = StyleSheet.create({
     width: '95%',
     borderRadius: 20,
     height: 200,
-    backgroundColor: '#000', // Fundo preto
-    opacity: 0.6, // Torna o box meio apagado
+    backgroundColor: '#000',
+    opacity: 0.6,
     marginBottom: 16,
     overflow: 'hidden',
   },
@@ -83,7 +87,7 @@ const screenstyle = StyleSheet.create({
     height: 200,
     backgroundColor: '#0D1A2D',
     marginBottom: 16,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   box3: {
     padding: 20,
@@ -92,12 +96,11 @@ const screenstyle = StyleSheet.create({
     height: 200,
     backgroundColor: '#EF065D',
     marginBottom: 16,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   containerText: {
     width: 200,
     flexDirection: 'row',
-
   },
   imagem1: {
     marginTop: 20,
@@ -109,17 +112,14 @@ const screenstyle = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 35,
-    color: 'white',
   },
   title2: {
     fontWeight: 'bold',
     fontSize: 30,
-    color: 'white',
   },
   text: {
-    textAlign: 'left',  // Fixed typo from 'textAling'
+    textAlign: 'left',
     color: 'white',
     fontSize: 13,
   },
-
 });
