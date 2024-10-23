@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useAccessibility } from '../../context/AccessibilityContext/';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const fases = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
@@ -21,7 +22,7 @@ const groupBy = (array, groupSize) => {
 
 export default function Trilha({ navigation }) {
   const [showAll, setShowAll] = useState(false); // Estado para controlar a visibilidade
-  const grupos = groupBy(fases, 6);
+  const grupos = groupBy(fases, 5);
 
   const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
   // Definindo as cores dependendo do modo de acessibilidade
@@ -63,9 +64,12 @@ export default function Trilha({ navigation }) {
             );
           })}
         </View>
-        {/* */}
-        <Text style={[styles.titulo, { fontSize: fontSize, color: textColor }]}>texto qualquer</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+          <Icon name="menu" size={50} style={{marginTop:20, marginBottom:20}}  color={textColor} />
+        </TouchableOpacity>
       </View>
+      <Text style={[styles.titulo, { fontSize: fontSize, color: textColor }]}>texto qualquer</Text>
+
     </View>
   );
 }
@@ -76,20 +80,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Fundo branco
   },
   rowContainer: {
+    borderWidth:1,
+    borderColor:'red',
     flexDirection: 'row', // Alinha o botão e as barras em linha
-    alignItems: 'center', // Centraliza verticalmente
+    justifyContent:'justify-between',
+    alignItems:'center',
+    gap:25,
     marginTop: 20, // Margem superior para afastar do topo
     marginLeft: 10, // Adiciona margem esquerda para afastar do limite
-  },
-  backButton: {
-    // Removido marginRight para aproximar a seta da esquerda
-  },
-  barrasContainer: {
-    flex: 1,
-    justifyContent: 'center', // Corrigido para "justifyContent"
-    flexDirection: 'column', // Muda para coluna para agrupar os itens
-    gap: 10, // Espaçamento entre os grupos
-    alignItems: 'center', // Alinha as barras à esquerda
   },
   grupoContainer: {
     justifyContent: 'center',
