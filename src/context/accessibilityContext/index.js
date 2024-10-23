@@ -10,10 +10,13 @@ export const AccessibilityProvider = ({ children }) => {
   const [titleFontSize, setTitleFontSize] = useState(20);
   const [isHighContrast, setIsHighContrast] = useState(false);
 
+  const MAX_FONT_SIZE = 30;
+  const MIN_FONT_SIZE = 10;
+
   // Funções para aumentar e diminuir o tamanho da fonte
   const increaseFontSize = () => {
     setFontSize((prevSize) => {
-      const newSize = prevSize + 2;
+      const newSize = Math.min(prevSize + 2, MAX_FONT_SIZE); // Limita ao máximo
       saveFontSize(newSize);
       return newSize;
     });
@@ -21,7 +24,7 @@ export const AccessibilityProvider = ({ children }) => {
 
   const decreaseFontSize = () => {
     setFontSize((prevSize) => {
-      const newSize = Math.max(prevSize - 2, 10);
+      const newSize = Math.max(prevSize - 2, MIN_FONT_SIZE); // Limita ao mínimo
       saveFontSize(newSize);
       return newSize;
     });
@@ -74,7 +77,6 @@ export const AccessibilityProvider = ({ children }) => {
       console.error('Failed to load high contrast preference:', e);
     }
   };
-
 
   useEffect(() => {
     loadFontSize();
