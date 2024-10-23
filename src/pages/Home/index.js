@@ -21,10 +21,10 @@ export default function Home({ navigation }) {
       </TouchableOpacity>
       <Text style={{ ...screenstyle.header, color: 'white', marginTop: 55 }}>Olá, seja Bem Vindo</Text>
 
-      <TouchableOpacity style={screenstyle.box1}>
+      <TouchableOpacity style={screenstyle.box1} onPress={() => navigation.navigate('Trilha')}>
         <View style={screenstyle.containerText}>
           <View>
-            <Text style={{ ...screenstyle.title, color: 'white' }}>Quiz</Text>
+            <Text style={{ ...screenstyle.title, color: 'white' }}>Trilha</Text>
             <Text style={{ ...screenstyle.text, fontSize: fontSize, color: "#ffe900", fontWeight: 'bold' }}>Em construção</Text>
           </View>
           <Image source={require('../../../assets/home-imagem1.png')} style={screenstyle.imagem1} />

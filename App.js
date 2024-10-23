@@ -12,7 +12,9 @@ import Login from './src/pages/Login';
 import Cadastro from './src/pages/Cadastro';
 import DetalhesConstelacao from './src/pages/Constelacao';
 import Constelacao from './src/pages/Constelacao';
-import Perfil from './src/pages/Perfil/';
+import Perfil from './src/pages/Perfil/'; 
+import Trilha from './src/pages/Trilha/';
+import Quiz from './src/pages/Quiz/';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +32,8 @@ export default function App() {
           <Stack.Screen name="Constelacao" options={{ headerShown: false }} component={Constelacao} />
           <Stack.Screen name="SistemaSolar" options={{ headerShown: false }} component={SistemaSolar} />
           <Stack.Screen name="Planeta" options={{ headerShown: false }} component={Planeta} />
+          <Stack.Screen name="Trilha" options={{ headerShown: false }} component={Trilha} />
+          <Stack.Screen name="Quiz" options={{ headerShown: false }} component={Quiz} />
           <Stack.Screen name="Perfil" options={{ headerShown: false }} component={Perfil} />
         </Stack.Navigator>
       </AccessibilityProvider>
