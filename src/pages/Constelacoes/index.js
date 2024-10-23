@@ -1,4 +1,7 @@
 import React from 'react';
+import { useAccessibility } from '../../context/AccessibilityContext/';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import {
   SafeAreaView,
   View,
@@ -54,6 +57,11 @@ const data = [
 
 
 export default function Constelacoes({ navigation }) {
+  const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
+
+  // Definindo as cores dependendo do modo de acessibilidade
+  const backgroundColor = isHighContrast ? '#000' : '#FFF';
+  const textColor = isHighContrast ? '#FFF' : '#000';
 
   const Item = ({ dados }) => (
     <TouchableOpacity onPress={() => navigation.navigate('Constelacao', { constelacao: dados })} style={styles.item}>
@@ -77,12 +85,15 @@ export default function Constelacoes({ navigation }) {
 
   return (
     <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
+        <TouchableOpacity style={{marginTop:50, position:'absolute', right:30,marginBottom:20}} onPress={() => navigation.navigate('Perfil')}>
+          <Icon name="menu" size={50} color={textColor} />
+        </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.botaoVoltar}>
         <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao} />
       </TouchableOpacity>
       <View style={styles.container}>
         <View>
-          <Text style={styles.tituloConstelacao}>História das constelações</Text>
+          <Text style={[styles.tituloConstelacao, {fontSize*1.4 , color: textColor}]}>História das constelações</Text>
           <SafeAreaView style={styles.safeArea}>
             <FlatList
               data={data}
@@ -95,7 +106,7 @@ export default function Constelacoes({ navigation }) {
               keyExtractor={item => item.id}
             />
           </SafeAreaView>
-          <Text style={styles.textodrag}>Arraste os planetas para o lado</Text>
+          <Text style={[styles.textodrag, {fontSize: fontSize, color: textColor }]}>Arraste os planetas para o lado</Text>
         </View>
       </View>
     </ImageBackground>

@@ -16,11 +16,9 @@ export default function Home({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={{ ...screenstyle.container, backgroundColor }}>
-
       <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-        <Icon name="menu" size={30} color={textColor} />
+        <Icon name="menu" size={30} style={{marginTop:20, position:'absolute', right:-170,marginBottom:20}}  color={textColor} />
       </TouchableOpacity>
-
       <Text style={{ ...screenstyle.header, color: 'white', marginTop: 55 }}>Olá, seja Bem Vindo</Text>
 
       <TouchableOpacity style={screenstyle.box1}>
