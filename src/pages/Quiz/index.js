@@ -208,10 +208,13 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
     if (pontos === 5) {
       return (
         <>
-          <Image source={require('../../../assets/robo-feliz.png')} style={{marginHorizontal:'auto',marginTop:-20}} />
-          <Text style={[styles.result, { color: textColor , fontSize:fontSize, position:'relative', top:-50}]}>
+          <Image source={require('../../../assets/robo-feliz.png')} style={{marginHorizontal:'auto',position:'relative', top:-50, left:20}}/>
+          <Text style={[styles.result, { color: textColor, fontSize:fontSize ,  position:'relative', top:-50,left:20}]}>
             Você acertou {pontos} de {fases.length} perguntas.
           </Text>
+          <TouchableOpacity  onPress={reiniciarQuiz} style={{backgroundColor:'#EF065D', marginTop:0,marginLeft:20}}>
+              <Text style={{color:'white', fontSize:fontSize, fontWeight:'bold',textAlign:'center', padding:10, borderRadius:20,}}>Recomeçar Quiz</Text>
+           </TouchableOpacity>
         </>
       );
     }
@@ -220,9 +223,12 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
       return (
         <>
           <Image source={require('../../../assets/robo-triste.png')} style={{marginHorizontal:'auto',position:'relative', top:-50}}/>
-          <Text style={[styles.result, { color: textColor, fontSize:fontSize }]}>
+          <Text style={[styles.result, { color: textColor, fontSize:fontSize ,  position:'relative', top:-50}]}>
             Você acertou {pontos} de {fases.length} perguntas. Você precisa acertar 5
           </Text>
+          <TouchableOpacity  onPress={reiniciarQuiz} style={{backgroundColor:'#EF065D', marginTop:0}}>
+              <Text style={{color:'white', fontSize:fontSize, fontWeight:'bold',textAlign:'center', padding:10, borderRadius:20}}>Recomeçar Quiz</Text>
+            </TouchableOpacity>
         </>
       );
     }
@@ -234,6 +240,9 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
           <Text style={[styles.result, { color: textColor, fontSize:fontSize ,  position:'relative', top:-50}]}>
             Você acertou {pontos} de {fases.length} perguntas. Você precisa acertar 5
           </Text>
+          <TouchableOpacity  onPress={reiniciarQuiz} style={{backgroundColor:'#EF065D', marginTop:0}}>
+              <Text style={{color:'white', fontSize:fontSize, fontWeight:'bold',textAlign:'center', padding:10, borderRadius:20}}>Recomeçar Quiz</Text>
+            </TouchableOpacity>
         </>
       );
     }
@@ -380,9 +389,6 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
         ) : (
           <View style={{ position:'absolute', bottom:78,left:50 }}>
             {mostarRobo()} 
-            <TouchableOpacity  onPress={reiniciarQuiz} style={{backgroundColor:'#EF065D', }}>
-              <Text style={{color:'white', fontSize:fontSize, fontWeight:'bold',textAlign:'center', padding:10, borderRadius:20}}>Recomeçar Quiz</Text>
-            </TouchableOpacity>
           </View>
         )}
       </View>
