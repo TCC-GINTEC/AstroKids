@@ -11,13 +11,24 @@ const astrolinoImage3 = require('../../../assets/robo2.png');
 
 
 const fases = [
-  { id: 1, pergunta: 'Qual planeta é conhecido como o Planeta Vermelho?', opcoes: ['Marte', 'Terra', 'Vênus', 'Urano'], respostaCorreta: 'Marte' },
-  { id: 2, pergunta: 'Qual é o maior planeta do sistema solar?', opcoes: ['Júpiter', 'Saturno', 'Netuno', 'Urano'], respostaCorreta: 'Júpiter' },
-  { id: 3, pergunta: 'Qual planeta é conhecido como o Planeta Azul?', opcoes: ['Terra', 'Marte', 'Vênus', 'Mercúrio'], respostaCorreta: 'Terra' },
-  { id: 4, pergunta: 'Qual planeta é o mais próximo do Sol?', opcoes: ['Mercúrio', 'Vênus', 'Terra', 'Marte'], respostaCorreta: 'Mercúrio' },
-  { id: 5, pergunta: 'Qual é o planeta dos anéis?', opcoes: ['Saturno', 'Júpiter', 'Urano', 'Netuno'], respostaCorreta: 'Saturno' },
-  { id: 6, pergunta: 'Qual é o planeta mais distante do Sol?', opcoes: ['Netuno', 'Urano', 'Saturno', 'Júpiter'], respostaCorreta: 'Netuno' },
+  { id: 1, pergunta: 'Qual planeta é conhecido como o Planeta Vermelho?', opcoes: ['Marte', 'Terra', 'Venus', 'Urano'], respostaCorreta: 'Marte' },
+  { id: 2, pergunta: 'Qual é o maior planeta do sistema solar?', opcoes: ['Júpiter', 'Saturno', 'Netuno', 'Urano'], respostaCorreta: 'Jupiter' },
+  { id: 3, pergunta: 'Qual planeta é conhecido como o Planeta Azul?', opcoes: ['Terra', 'Marte', 'Venus', 'Mercúrio'], respostaCorreta: 'Terra' },
+  { id: 4, pergunta: 'Qual planeta é o mais próximo do Sol?', opcoes: ['Mercurio', 'Venus', 'Terra', 'Marte'], respostaCorreta: 'Mercurio' },
+  { id: 5, pergunta: 'Qual é o planeta dos anéis?', opcoes: ['Saturno', 'Jupiter', 'Urano', 'Netuno'], respostaCorreta: 'Saturno' },
+  { id: 6, pergunta: 'Qual é o planeta mais distante do Sol?', opcoes: ['Netuno', 'Urano', 'Saturno', 'Jupiter'], respostaCorreta: 'Netuno' },
 ];
+
+const imagens = {
+  marte: require('../../../assets/marte.png'),
+  jupiter: require('../../../assets/jupiter.png'),
+  saturno: require('../../../assets/saturno.png'),
+  terra: require('../../../assets/terra.png'),
+  mercurio: require('../../../assets/mercurio.png'),
+  netuno: require('../../../assets/netuno.png'),
+  urano: require('../../../assets/urano.png'),
+  venus: require('../../../assets/venus.png'),
+};
 
 const groupBy = (array, groupSize) => {
   return array.reduce((acc, item, index) => {
@@ -35,9 +46,10 @@ export default function Quiz({ navigation }) {
   const [showTutorial, setShowTutorial] = useState(true);
   const [next, setNextTutorial] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
-  const [pontos, setPontos] = useState(1);
+  const [pontos, setPontos] = useState(0);
   const [quizFinalizado, setQuizFinalizado] = useState(false);
-  const [questaoAtual, setQuestaoAtual] = useState(0); // Estado para rastrear a questão atual
+  const [questaoAtual, setQuestaoAtual] = useState(0);
+  const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
   useEffect(() => {
     handleAutoLogin();
@@ -166,42 +178,29 @@ export default function Quiz({ navigation }) {
   }
 
 
-  const handleResposta = (index) => {
-    if (index < fases.length) {
-        Alert.alert(
-            fases[index].pergunta,
-            fases[index].opcoes.map((opcao, opIndex) => `${opIndex + 1}: ${opcao}`).join('\n'),
-            [
-                { text: 'Cancelar', style: 'cancel' },
-                ...fases[index].opcoes.map((opcao, opIndex) => ({
-                    text: opcao,
-                    onPress: () => verificarResposta(index, opIndex),
-                })),
-            ]
-        );
+  const verificarResposta = () => {
+    const respostaCorreta = fases[questaoAtual].respostaCorreta;
+
+    if (opcaoSelecionada === respostaCorreta) {
+      setPontos(pontos + 1);
     }
-};
 
-const verificarResposta = (index, opIndex) => {
-    const respostaSelecionada = fases[index].opcoes[opIndex];
-    const respostaCorreta = fases[index].respostaCorreta;
-
-    if (respostaSelecionada === respostaCorreta) {
-        Alert.alert('Resposta correta!');
-        setPontos(pontos + 1);
-        setQuestaoAtual(index + 1); // Atualiza a questão atual quando a resposta está correta
-
+    if (questaoAtual < fases.length - 1) {
+      setQuestaoAtual(questaoAtual + 1);
+      setOpcaoSelecionada(null); // Reset para a próxima questão
     } else {
-        Alert.alert(`Resposta incorreta! A resposta correta é: ${respostaCorreta}`);
+      setQuizFinalizado(true);
     }
+  };
 
-    if (index < fases.length - 1) {
-        handleResposta(index + 1);
-    } else {
-        setQuizFinalizado(true);
-        Alert.alert(`Quiz finalizado! Você acertou ${pontos + 1} de ${fases.length} perguntas.`);
-    }
-};
+  const reiniciarQuiz = () => {
+    setPontos(0);
+    setQuizFinalizado(false);
+    setQuestaoAtual(0);
+    setOpcaoSelecionada(null);
+  };
+
+
   return (
     <View style={[styles.container, { paddingTop: 25, backgroundColor }]}>
 
@@ -211,7 +210,7 @@ const verificarResposta = (index, opIndex) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Image 
             source={isHighContrast ? require('../../../assets/seta-branca.png') : require('../../../assets/seta.png')}
-            style={{ width: 30, height: 30, marginLeft: 20, transform: isHighContrast ? [] : [{ rotate: '-180deg' }] }}
+            style={{ width: 30, height: 30, marginLeft: -5, transform: isHighContrast ? [] : [{ rotate: '-180deg' }] }}
           />
         </TouchableOpacity>
         <View style={{zIndex:next == 3 ? 99: 0, borderRadius:next == 3?10:0, backgroundColor:'white',paddingVertical:next == 3 ?20:0, paddingHorizontal: next == 3 ?5:0}}>
@@ -240,10 +239,10 @@ const verificarResposta = (index, opIndex) => {
       {/*-------------------------------------Peguntas ficaram aqui ------------------------------------------------ */}
       
       <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
-        fases
+        {fases[questaoAtual].pergunta}
       </Text>      
       {/*--------------------------------------Botão de Ajuda aqui -------------------------------------------------- */}
-       {/* Botão de ajuda */}
+       
      {next == 2? (
         <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
           <View style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
@@ -261,14 +260,65 @@ const verificarResposta = (index, opIndex) => {
         </View>
      )
     }
-        <View style={styles.container}>
-            <Text style={styles.title}>Quiz de Astronomia</Text>
-            {!quizFinalizado ? (
-                <Button title="Começar Quiz" onPress={() => handleResposta(0)} />
-            ) : (
-                <Text style={styles.result}>Você acertou {pontos} de {fases.length} perguntas.</Text>
-            )}
+    
+      {/*--------------------------------------opcoes de resposta -------------------------------------------------- */}
+
+      <View style={styles.container}>
+        {!quizFinalizado ? (
+        <>
+          <Text style={styles.pergunta}></Text>
+
+          {/* Mapeia as opções em pares de duas */}
+          {fases[questaoAtual].opcoes.map((opcao, index) => {
+            if (index % 2 === 0) {
+              return (
+                <View key={index} style={styles.linhaOpcoes}>
+                  <TouchableOpacity
+                    style={[
+                      styles.opcao,
+                      opcaoSelecionada === fases[questaoAtual].opcoes[index] && styles.opcaoSelecionada,
+                    ]}
+                    onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index])}
+                  >
+                    <Image 
+                      source={imagens[opcao.toLowerCase()]} // Usa o mapeamento de imagens
+                      style={styles.imagem} 
+                    />
+                    <Text style={styles.opcaoTexto}>{fases[questaoAtual].opcoes[index]}</Text>
+                  </TouchableOpacity>
+
+                  {fases[questaoAtual].opcoes[index + 1] && (
+                    <TouchableOpacity
+                      style={[
+                        styles.opcao,
+                        opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] && styles.opcaoSelecionada,
+                      ]}
+                      onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index + 1])}
+                    >
+                      <Image 
+                        source={imagens[fases[questaoAtual].opcoes[index + 1].toLowerCase()]} // Acessa a imagem pelo mapeamento
+                        style={styles.imagem} 
+                      />
+                      <Text style={styles.opcaoTexto}>{fases[questaoAtual].opcoes[index + 1]}</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            }
+            return null;
+          })}
+
+          {opcaoSelecionada && (
+            <Button title="Responder" onPress={verificarResposta} />
+          )}
+        </>
+      ) : (
+        <View>
+          <Text style={styles.result}>Você acertou {pontos} de {fases.length} perguntas.</Text>
+          <Button title="Recomeçar Quiz" onPress={reiniciarQuiz} />
         </View>
+      )}
+      </View>
 
       {/* Renderiza o tutorial se `showTutorial` for verdadeiro */}
       {showTutorial && <Tutorial />}
@@ -282,6 +332,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  pergunta: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  opcao: {
+    width: '48%', // Cada opção ocupa 50% do espaço da linha
+    padding: 15,
+    backgroundColor: '#c8cacf',
+    borderRadius: 8,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  imagem: {
+    width: 80,
+    height: 80,
+  },
+  linhaOpcoes: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    borderWidth: 2,            // Adiciona a largura da borda
+    borderColor: 'red',       // Define a cor da borda como vermelha
+    borderRadius: 5,          // Adiciona bordas arredondadas
+    padding: 5,               // Adiciona um espaço interno
+  },
+  opcaoSelecionada: {
+    backgroundColor: '#2c2d30', // Cor para a opção selecionada
+  },
+  opcaoTexto: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  result: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
   },
   rowContainer: {
     flexDirection: 'row',
