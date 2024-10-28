@@ -11,12 +11,11 @@ const astrolinoImage3 = require('../../../assets/robo2.png');
 
 
 const fases = [
-  { id: 1, pergunta: 'Qual planeta é conhecido como o Planeta Vermelho?', opcoes: ['Marte', 'Terra', 'Venus', 'Urano'], respostaCorreta: 'Marte' },
-  { id: 2, pergunta: 'Qual é o maior planeta do sistema solar?', opcoes: ['Júpiter', 'Saturno', 'Netuno', 'Urano'], respostaCorreta: 'Jupiter' },
-  { id: 3, pergunta: 'Qual planeta é conhecido como o Planeta Azul?', opcoes: ['Terra', 'Marte', 'Venus', 'Mercúrio'], respostaCorreta: 'Terra' },
-  { id: 4, pergunta: 'Qual planeta é o mais próximo do Sol?', opcoes: ['Mercurio', 'Venus', 'Terra', 'Marte'], respostaCorreta: 'Mercurio' },
-  { id: 5, pergunta: 'Qual é o planeta dos anéis?', opcoes: ['Saturno', 'Jupiter', 'Urano', 'Netuno'], respostaCorreta: 'Saturno' },
-  { id: 6, pergunta: 'Qual é o planeta mais distante do Sol?', opcoes: ['Netuno', 'Urano', 'Saturno', 'Jupiter'], respostaCorreta: 'Netuno' },
+  { id: 1, pergunta: 'Qual planeta é conhecido como o Planeta Vermelho?', opcoes: ['Marte', 'Terra', 'Venus', 'Urano'], respostaCorreta: 'Marte', ajuda: 'Este planeta tem uma coloração avermelhada devido à presença de óxidos de ferro em sua superfície.' },
+  { id: 2, pergunta: 'Qual é o maior planeta do sistema solar?', opcoes: ['Jupiter', 'Saturno', 'Netuno', 'Urano'], respostaCorreta: 'Jupiter', ajuda: 'Este é o planeta com o maior diâmetro e volume no sistema solar.' },
+  { id: 3, pergunta: 'Qual planeta é conhecido como o Planeta Azul?', opcoes: ['Terra', 'Marte', 'Venus', 'Mercurio'], respostaCorreta: 'Terra', ajuda: 'Este planeta tem uma grande quantidade de água líquida, o que dá a ele sua aparência azul vista do espaço.' },
+  { id: 4, pergunta: 'Qual planeta é o mais próximo do Sol?', opcoes: ['Mercurio', 'Venus', 'Terra', 'Marte'], respostaCorreta: 'Mercurio', ajuda: 'Este planeta está mais próximo do Sol e tem uma órbita muito rápida.' },
+  { id: 5, pergunta: 'Qual é o planeta dos anéis?', opcoes: ['Saturno', 'Jupiter', 'Urano', 'Netuno'], respostaCorreta: 'Saturno', ajuda: 'Este planeta é conhecido por seu sistema de anéis composto principalmente de gelo e poeira.' }
 ];
 
 const imagens = {
@@ -50,7 +49,8 @@ export default function Quiz({ navigation }) {
   const [quizFinalizado, setQuizFinalizado] = useState(false);
   const [questaoAtual, setQuestaoAtual] = useState(0);
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
-
+  const [modalVisible2, setModalVisible2] = useState(false);
+  
   useEffect(() => {
     handleAutoLogin();
   }, []);
@@ -96,6 +96,13 @@ export default function Quiz({ navigation }) {
   const textColor = isHighContrast ? '#FFF' : '#000';
   const grupos = groupBy(fases, 5);
 
+  useEffect(() => {
+    // Se next for maior que 3, significa que o tutorial acabou
+    if (next > 3) {
+      setShowTutorial(false); // Oculta o tutorial
+    }
+  }, [next]);
+
   function Tutorial() {
     let imagem;
     if (next === 1) {
@@ -139,44 +146,38 @@ export default function Quiz({ navigation }) {
       </View>
     );
   }
-  
 
-  useEffect(() => {
-    // Se next for maior que 3, significa que o tutorial acabou
-    if (next > 3) {
-      setShowTutorial(false); // Oculta o tutorial
-    }
-  }, [next]);
 
-  function ajuda() {
+  const abrirAjuda = () => {
+    setModalVisible2(true);
+  };
+
+
+  const Ajuda = ({ modalVisible, setModalVisible, ajudaTexto }) => {
     return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.overlay}>
-          <View style={{width:'80%', backgroundColor:'white', marginTop:50, borderRadius:10, padding:10}}>
-            <Pressable
-              style={{position:'absolute', left:10}}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={{ color: 'black', fontWeight: 'bold', fontSize:30 }}>X</Text>
-            </Pressable>
-            <Text style={{ color: 'black', fontSize: 18, marginBottom: 20 , textAlign:'center', fontSize:30, fontWeight:'bold'}}>Ajuda</Text>
-            <Text style={{ color: 'black', fontSize: 16, textAlign: 'center', fontSize:fontSize }}>
-              Esta é uma dica ou sugestão de ajuda que pode orientar o usuário ao responder as perguntas do quiz.
-            </Text>
-          
-          </View>
-        </View>
-      </Modal>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)} // Fechar o modal
+        >
+            <View style={styles.overlay}>
+                <View style={styles.modalContainer}>
+                    <Pressable
+                        style={styles.closeButton}
+                        onPress={() => setModalVisible(false)} // Fechar o modal
+                    >
+                        <Text style={styles.closeButtonText}>X</Text>
+                    </Pressable>
+                    <Text style={styles.title}>Ajuda</Text>
+                    <Text style={styles.content}>{ajudaTexto}</Text>
+                </View>
+            </View>
+        </Modal>
     );
-  }
+};
 
+const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atual
 
   const verificarResposta = () => {
     const respostaCorreta = fases[questaoAtual].respostaCorreta;
@@ -207,60 +208,57 @@ export default function Quiz({ navigation }) {
       {/*---------------------------------------container do botoao de sair, barras, e menu-------------------------------------------------- */}
 
       <View style={styles.rowContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Image 
-            source={isHighContrast ? require('../../../assets/seta-branca.png') : require('../../../assets/seta.png')}
-            style={{ width: 30, height: 30, marginLeft: -5, transform: isHighContrast ? [] : [{ rotate: '-180deg' }] }}
-          />
-        </TouchableOpacity>
-        <View style={{zIndex:next == 3 ? 99: 0, borderRadius:next == 3?10:0, backgroundColor:'white',paddingVertical:next == 3 ?20:0, paddingHorizontal: next == 3 ?5:0}}>
-          {grupos.map((grupo, index) => {
-            if (!showAll && index > 0) return null;
-            return (
-              <View key={index} style={styles.groupContainer}>
-                {grupo.map((fase, index) => (
-                <View key={index} style={styles.groupContainer}>
-                    <View 
-                        style={[styles.grayBar, { backgroundColor: fase.id === questaoAtual ? 'black' : fase.id <= pontos ? '#2c2d30' : '#c8cacf' }]}
-                    >
-                        <Text style={styles.text}>{fase.pergunta}</Text>
-                    </View>
-                </View>
-            ))}
-              </View>
-            );
-          })}
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-          <Icon name="menu" size={50} color={textColor} style={{ marginTop: 20, marginBottom: 20 }} />
-        </TouchableOpacity>
-      </View>
-      
-      {/*-------------------------------------Peguntas ficaram aqui ------------------------------------------------ */}
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Image 
+                source={isHighContrast ? require('../../../assets/seta-branca.png') : require('../../../assets/seta.png')}
+                style={{ width: 30, height: 30, marginLeft: -5, transform: isHighContrast ? [] : [{ rotate: '-180deg' }] }}
+              />
+            </TouchableOpacity>
+            
+            <View 
+              style={{
+                zIndex: next === 3 ? 99 : 0, 
+                borderRadius: next === 3 ? 10 : 0, 
+                backgroundColor: isHighContrast ? 'transparent' : 'white', 
+                paddingVertical: next === 3 ? 20 : 0, 
+                paddingHorizontal: next === 3 ? 5 : 0
+              }}
+            >
+              {grupos.map((grupo, index) => {
+                if (!showAll && index > 0) return null;
+                return (
+                  <View key={index} style={styles.groupContainer}>
+                    {grupo.map((fase, index) => (
+                      <View key={index} style={styles.groupContainer}>
+                        <View 
+                          style={[
+                            styles.grayBar, 
+                            { 
+                              backgroundColor: fase.id === questaoAtual 
+                                ? (isHighContrast ? '#42d7f5' : 'black') 
+                                : (fase.id <= pontos 
+                                    ? (isHighContrast ? '#42d7f5' : '#2c2d30') 
+                                    : (isHighContrast ? '#D3D3D3' : '#c8cacf'))
+                            }
+                          ]}
+                        >
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                );
+              })}
+            </View>
+            
+            <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+              <Icon name="menu" size={50} color={textColor} style={{ marginTop: 20, marginBottom: 20 }} />
+            </TouchableOpacity>
+          </View>
+
       
       <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
         {fases[questaoAtual].pergunta}
-      </Text>      
-      {/*--------------------------------------Botão de Ajuda aqui -------------------------------------------------- */}
-       
-     {next == 2? (
-        <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
-          <View style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
-            <Icon name="help" size={40} color={'white'} style={{margin:'auto'}} />
-          </View>
-        </View>
-     ): 
-     (
-        <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
-          <TouchableOpacity 
-            onPress={() => setModalVisible(true)}
-          style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
-            <Icon name="help" size={40} color={'white'} style={{margin:'auto'}} />
-          </TouchableOpacity>
-        </View>
-     )
-    }
-    
+      </Text>          
       {/*--------------------------------------opcoes de resposta -------------------------------------------------- */}
 
       <View style={styles.container}>
@@ -273,48 +271,77 @@ export default function Quiz({ navigation }) {
             if (index % 2 === 0) {
               return (
                 <View key={index} style={styles.linhaOpcoes}>
-                  <TouchableOpacity
-                    style={[
-                      styles.opcao,
-                      opcaoSelecionada === fases[questaoAtual].opcoes[index] && styles.opcaoSelecionada,
-                    ]}
-                    onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index])}
-                  >
-                    <Image 
-                      source={imagens[opcao.toLowerCase()]} // Usa o mapeamento de imagens
-                      style={styles.imagem} 
-                    />
-                    <Text style={styles.opcaoTexto}>{fases[questaoAtual].opcoes[index]}</Text>
-                  </TouchableOpacity>
-
-                  {fases[questaoAtual].opcoes[index + 1] && (
                     <TouchableOpacity
                       style={[
                         styles.opcao,
-                        opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] && styles.opcaoSelecionada,
+                        opcaoSelecionada === fases[questaoAtual].opcoes[index] && { backgroundColor: 'black' }
                       ]}
-                      onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index + 1])}
+                      onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index])}
                     >
                       <Image 
-                        source={imagens[fases[questaoAtual].opcoes[index + 1].toLowerCase()]} // Acessa a imagem pelo mapeamento
+                        source={imagens[opcao.toLowerCase()]} // Usa o mapeamento de imagens
                         style={styles.imagem} 
                       />
-                      <Text style={styles.opcaoTexto}>{fases[questaoAtual].opcoes[index + 1]}</Text>
+                      <Text
+                        style={[
+                          styles.opcaoTexto,
+                          { fontSize: fontSize },
+                          opcaoSelecionada === fases[questaoAtual].opcoes[index] ? { color: 'white' } : { color: 'black' }
+                        ]}
+                      >
+                        {fases[questaoAtual].opcoes[index]}
+                      </Text>
                     </TouchableOpacity>
-                  )}
-                </View>
+
+                    {fases[questaoAtual].opcoes[index + 1] && (
+                      <TouchableOpacity
+                        style={[
+                          styles.opcao,
+                          opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] && { backgroundColor: 'black' }
+                        ]}
+                        onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index + 1])}
+                      >
+                        <Image 
+                          source={imagens[fases[questaoAtual].opcoes[index + 1].toLowerCase()]} // Acessa a imagem pelo mapeamento
+                          style={styles.imagem} 
+                        />
+                        <Text
+                          style={[
+                            styles.opcaoTexto,
+                            { fontSize: fontSize },
+                            opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] ? { color: 'white' } : { color: 'black' }
+                          ]}
+                        >
+                          {fases[questaoAtual].opcoes[index + 1]}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                 </View>
               );
             }
             return null;
           })}
 
           {opcaoSelecionada && (
-            <Button title="Responder" onPress={verificarResposta} />
+            <TouchableOpacity  onPress={verificarResposta}  
+            style={{
+              position: 'absolute', 
+              right: 20, // margem da borda direita
+              bottom: 0, // margem da borda inferior
+              padding: 10, 
+              backgroundColor: '#42d7f5', // cor de fundo
+              borderRadius: 5, 
+              width:200,
+              
+            }}
+            >
+              <Text style={{color:'white', fontSize:fontSize, textAlign:'center', fontWeight:500}}>responder</Text>
+            </TouchableOpacity>
           )}
         </>
       ) : (
         <View>
-          <Text style={styles.result}>Você acertou {pontos} de {fases.length} perguntas.</Text>
+          <Text style={[styles.result, {color:textColor}]}>Você acertou {pontos} de {fases.length} perguntas.</Text>
           <Button title="Recomeçar Quiz" onPress={reiniciarQuiz} />
         </View>
       )}
@@ -322,8 +349,31 @@ export default function Quiz({ navigation }) {
 
       {/* Renderiza o tutorial se `showTutorial` for verdadeiro */}
       {showTutorial && <Tutorial />}
-      {ajuda()}
-
+      
+         {/*--------------------------------------Botão de Ajuda aqui -------------------------------------------------- */}
+       
+         {next == 2? (
+        <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
+          <View style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
+            <Icon name="help" size={40} color={'white'} style={{margin:'auto'}} />
+          </View>
+        </View>
+      ): 
+      (
+          <View style={{position:'absolute', bottom:2, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
+            <TouchableOpacity 
+            onPress={() => setModalVisible2(true)}
+            style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
+              <Icon name="help" size={40} color={'white'} style={{margin:'auto'}} />
+            </TouchableOpacity>
+            <Ajuda 
+                    modalVisible={modalVisible2} 
+                    setModalVisible={setModalVisible2} 
+                    ajudaTexto={ajudaTexto} 
+                />
+          </View>
+      )
+    }
     </View>
   );
 }
@@ -331,7 +381,6 @@ export default function Quiz({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   title: {
@@ -354,11 +403,21 @@ const styles = StyleSheet.create({
   opcao: {
     width: '48%', // Cada opção ocupa 50% do espaço da linha
     padding: 15,
-    backgroundColor: '#c8cacf',
+    backgroundColor: 'white',
     borderRadius: 8,
     marginBottom: 10,
     alignItems: 'center',
-  },
+    // Estilos de sombra
+    shadowColor: 'black', // Cor da sombra
+    shadowOffset: {
+        width: 4, // deslocamento horizontal
+        height: 2, // deslocamento vertical
+    },
+    shadowOpacity: 0.9, // Opacidade da sombra
+    shadowRadius: 4, // Raio da sombra
+    elevation: 3, // Elevação da sombra para Android
+},
+
   imagem: {
     width: 80,
     height: 80,
@@ -366,18 +425,16 @@ const styles = StyleSheet.create({
   linhaOpcoes: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop:-26,
     marginBottom: 10,
-    borderWidth: 2,            // Adiciona a largura da borda
-    borderColor: 'red',       // Define a cor da borda como vermelha
     borderRadius: 5,          // Adiciona bordas arredondadas
     padding: 5,               // Adiciona um espaço interno
   },
   opcaoSelecionada: {
     backgroundColor: '#2c2d30', // Cor para a opção selecionada
+
   },
   opcaoTexto: {
-    color: 'white',
-    fontSize: 16,
     textAlign: 'center',
   },
   result: {
@@ -454,5 +511,34 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
-  
+  modalContainer: {
+    marginTop:50,
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
+},
+closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+},
+closeButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 24,
+},
+title: {
+    color: 'black',
+    fontSize: 30,
+    marginBottom: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+},
+content: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+},
 });
