@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity , Modal, Pressable, Button,Alert} from 'react-native';
 import { useState, useEffect } from 'react';
 import { useAccessibility } from '../../context/AccessibilityContext/';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,8 +11,12 @@ const astrolinoImage3 = require('../../../assets/robo2.png');
 
 
 const fases = [
-  { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
-  { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }
+  { id: 1, pergunta: 'Qual planeta é conhecido como o Planeta Vermelho?', opcoes: ['Marte', 'Terra', 'Vênus', 'Urano'], respostaCorreta: 'Marte' },
+  { id: 2, pergunta: 'Qual é o maior planeta do sistema solar?', opcoes: ['Júpiter', 'Saturno', 'Netuno', 'Urano'], respostaCorreta: 'Júpiter' },
+  { id: 3, pergunta: 'Qual planeta é conhecido como o Planeta Azul?', opcoes: ['Terra', 'Marte', 'Vênus', 'Mercúrio'], respostaCorreta: 'Terra' },
+  { id: 4, pergunta: 'Qual planeta é o mais próximo do Sol?', opcoes: ['Mercúrio', 'Vênus', 'Terra', 'Marte'], respostaCorreta: 'Mercúrio' },
+  { id: 5, pergunta: 'Qual é o planeta dos anéis?', opcoes: ['Saturno', 'Júpiter', 'Urano', 'Netuno'], respostaCorreta: 'Saturno' },
+  { id: 6, pergunta: 'Qual é o planeta mais distante do Sol?', opcoes: ['Netuno', 'Urano', 'Saturno', 'Júpiter'], respostaCorreta: 'Netuno' },
 ];
 
 const groupBy = (array, groupSize) => {
@@ -30,7 +34,10 @@ export default function Quiz({ navigation }) {
   const [showAll, setShowAll] = useState(false)
   const [showTutorial, setShowTutorial] = useState(true);
   const [next, setNextTutorial] = useState(1);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [respostas, setRespostas] = useState(Array(fases.length).fill(''));
+  const [pontos, setPontos] = useState(0);
+  const [quizFinalizado, setQuizFinalizado] = useState(false);
 
   useEffect(() => {
     handleAutoLogin();
@@ -79,7 +86,6 @@ export default function Quiz({ navigation }) {
 
   function Tutorial() {
     let imagem;
-  
     if (next === 1) {
       imagem = astrolinoImage1;
     } else if (next === 2) {
@@ -87,7 +93,7 @@ export default function Quiz({ navigation }) {
     } else if (next === 3) {
       imagem = astrolinoImage3;
     }
-  
+
     return (
       <View style={styles.overlay}>
         <TouchableOpacity onPress={skipTutorial}>
@@ -108,20 +114,10 @@ export default function Quiz({ navigation }) {
                   : null}
               </Text>
             </View>
-            <Image
-              style={{
-                object:'fill',
-                position: next === 2 ? 'absolute' : 'static',
-                right: next === 2 ? -240 : next == 3 ? -100: 0,
-                bottom:next === 2 ? -40 : 0,
-              }}
-              source={imagem}
-            />
+            <Image style={{object:'fill',position: next === 2 ? 'absolute' : 'static',right: next === 2 ? -240 : next == 3 ? -100: 0,bottom:next === 2 ? -40 : 0,}} source={imagem}/>
           </View>
           {next < 4 && ( // Verifica se o tutorial ainda não terminou
-            <TouchableOpacity
-              onPress={() => setNextTutorial((prev) => prev + 1)}
-            >
+            <TouchableOpacity onPress={() => setNextTutorial((prev) => prev + 1)}>
               <Text style={[styles.buttonTutorial, { fontSize: fontSize, textAlign:'center', marginTop:next == 2? -20 :0}]}>
                 {next === 3 ? 'Começar' : 'Próximo'}
               </Text>
@@ -132,6 +128,7 @@ export default function Quiz({ navigation }) {
     );
   }
   
+
   useEffect(() => {
     // Se next for maior que 3, significa que o tutorial acabou
     if (next > 3) {
@@ -139,12 +136,75 @@ export default function Quiz({ navigation }) {
     }
   }, [next]);
 
+  function ajuda() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.overlay}>
+          <View style={{width:'80%', backgroundColor:'white', marginTop:50, borderRadius:10, padding:10}}>
+            <Pressable
+              style={{position:'absolute', left:10}}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={{ color: 'black', fontWeight: 'bold', fontSize:30 }}>X</Text>
+            </Pressable>
+            <Text style={{ color: 'black', fontSize: 18, marginBottom: 20 , textAlign:'center', fontSize:30, fontWeight:'bold'}}>Ajuda</Text>
+            <Text style={{ color: 'black', fontSize: 16, textAlign: 'center', fontSize:fontSize }}>
+              Esta é uma dica ou sugestão de ajuda que pode orientar o usuário ao responder as perguntas do quiz.
+            </Text>
+          
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
+
+  const handleResposta = (index) => {
+    if (index < fases.length) {
+        Alert.alert(
+            fases[index].pergunta,
+            fases[index].opcoes.map((opcao, opIndex) => `${opIndex + 1}: ${opcao}`).join('\n'),
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                ...fases[index].opcoes.map((opcao, opIndex) => ({
+                    text: opcao,
+                    onPress: () => verificarResposta(index, opIndex),
+                })),
+            ]
+        );
+    }
+};
+
+const verificarResposta = (index, opIndex) => {
+    const respostaSelecionada = fases[index].opcoes[opIndex];
+    const respostaCorreta = fases[index].respostaCorreta;
+
+    if (respostaSelecionada === respostaCorreta) {
+        Alert.alert('Resposta correta!');
+        setPontos(pontos + 1);
+    } else {
+        Alert.alert(`Resposta incorreta! A resposta correta é: ${respostaCorreta}`);
+    }
+
+    if (index < fases.length - 1) {
+        handleResposta(index + 1);
+    } else {
+        setQuizFinalizado(true);
+        Alert.alert(`Quiz finalizado! Você acertou ${pontos + 1} de ${fases.length} perguntas.`);
+    }
+};
   return (
     <View style={[styles.container, { paddingTop: 25, backgroundColor }]}>
-      {/*------------------------------------------------------------------------------------------------------- */}
 
-      {/*container do botoao de sair, barras, e menu */}
+      {/*---------------------------------------container do botoao de sair, barras, e menu-------------------------------------------------- */}
+
       <View style={styles.rowContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Image 
@@ -174,12 +234,13 @@ export default function Quiz({ navigation }) {
         </TouchableOpacity>
       </View>
       
-      {/*------------------------------------------------------------------------------------------------------- */}
+      {/*-------------------------------------Peguntas ficaram aqui ------------------------------------------------ */}
       
-      <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>Texto da questão?</Text>
-     
-      {/*------------------------------------------------------------------------------------------------------- */}
-       {/* Botão de proximo */}
+      <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
+        fases
+      </Text>      
+      {/*--------------------------------------Botão de Ajuda aqui -------------------------------------------------- */}
+       {/* Botão de ajuda */}
      {next == 2? (
         <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
           <View style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
@@ -189,17 +250,27 @@ export default function Quiz({ navigation }) {
      ): 
      (
         <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
-          <TouchableOpacity style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
+          <TouchableOpacity 
+            onPress={() => setModalVisible(true)}
+          style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
             <Icon name="help" size={40} color={'white'} style={{margin:'auto'}} />
           </TouchableOpacity>
         </View>
      )
-     
-     }
-      
+    }
+        <View style={styles.container}>
+            <Text style={styles.title}>Quiz de Astronomia</Text>
+            {!quizFinalizado ? (
+                <Button title="Começar Quiz" onPress={() => handleResposta(0)} />
+            ) : (
+                <Text style={styles.result}>Você acertou {pontos} de {fases.length} perguntas.</Text>
+            )}
+        </View>
+
       {/* Renderiza o tutorial se `showTutorial` for verdadeiro */}
-      
       {showTutorial && <Tutorial />}
+      {ajuda()}
+
     </View>
   );
 }
@@ -278,4 +349,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
+  
 });
