@@ -201,7 +201,43 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
     setOpcaoSelecionada(null);
   };
 
-
+  function mostarRobo() {
+    // Adicione um log para depuração
+    console.log("Pontos:", pontos);
+  
+    if (pontos === 5) {
+      return (
+        <>
+          <Image source={require('../../../assets/robo-feliz.png')} style={{marginHorizontal:'auto',marginTop:-20}} />
+          <Text style={[styles.result, { color: textColor , fontSize:fontSize, position:'relative', top:-50}]}>
+            Você acertou {pontos} de {fases.length} perguntas.
+          </Text>
+        </>
+      );
+    }
+  
+    if (pontos === 4) {
+      return (
+        <>
+          <Image source={require('../../../assets/robo-triste.png')} style={{marginHorizontal:'auto',position:'relative', top:-50}}/>
+          <Text style={[styles.result, { color: textColor, fontSize:fontSize }]}>
+            Você acertou {pontos} de {fases.length} perguntas. Você precisa acertar 5
+          </Text>
+        </>
+      );
+    }
+  
+    if (pontos <= 4) {
+      return (
+        <>
+          <Image source={require('../../../assets/robo-triste.png')} style={{marginHorizontal:'auto', position:'relative', top:-50}}/>
+          <Text style={[styles.result, { color: textColor, fontSize:fontSize ,  position:'relative', top:-50}]}>
+            Você acertou {pontos} de {fases.length} perguntas. Você precisa acertar 5
+          </Text>
+        </>
+      );
+    }
+  }
   return (
     <View style={[styles.container, { paddingTop: 25, backgroundColor }]}>
 
@@ -257,36 +293,36 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
 
       
       <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
-        {fases[questaoAtual].pergunta}
+        {fases[questaoAtual] == 5 ?fases[questaoAtual].pergunta: ''}
       </Text>          
       {/*--------------------------------------opcoes de resposta -------------------------------------------------- */}
 
       <View style={styles.container}>
         {!quizFinalizado ? (
-        <>
-          <Text style={styles.pergunta}></Text>
-
-          {/* Mapeia as opções em pares de duas */}
-          {fases[questaoAtual].opcoes.map((opcao, index) => {
-            if (index % 2 === 0) {
-              return (
-                <View key={index} style={styles.linhaOpcoes}>
+          <>
+           <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
+                {fases[questaoAtual].pergunta}
+            </Text>
+            {fases[questaoAtual].opcoes.map((opcao, index) => {
+              if (index % 2 === 0) {
+                return (
+                  <View key={index} style={styles.linhaOpcoes}>
                     <TouchableOpacity
                       style={[
                         styles.opcao,
-                        opcaoSelecionada === fases[questaoAtual].opcoes[index] && { backgroundColor: 'black' }
+                        opcaoSelecionada === fases[questaoAtual].opcoes[index] && { backgroundColor: 'black' },
                       ]}
                       onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index])}
                     >
                       <Image 
-                        source={imagens[opcao.toLowerCase()]} // Usa o mapeamento de imagens
+                        source={imagens[opcao.toLowerCase()]} 
                         style={styles.imagem} 
                       />
                       <Text
                         style={[
                           styles.opcaoTexto,
                           { fontSize: fontSize },
-                          opcaoSelecionada === fases[questaoAtual].opcoes[index] ? { color: 'white' } : { color: 'black' }
+                          opcaoSelecionada === fases[questaoAtual].opcoes[index] ? { color: 'white' } : { color: 'black' },
                         ]}
                       >
                         {fases[questaoAtual].opcoes[index]}
@@ -297,61 +333,61 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
                       <TouchableOpacity
                         style={[
                           styles.opcao,
-                          opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] && { backgroundColor: 'black' }
+                          opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] && { backgroundColor: 'black' },
                         ]}
                         onPress={() => setOpcaoSelecionada(fases[questaoAtual].opcoes[index + 1])}
                       >
                         <Image 
-                          source={imagens[fases[questaoAtual].opcoes[index + 1].toLowerCase()]} // Acessa a imagem pelo mapeamento
+                          source={imagens[fases[questaoAtual].opcoes[index + 1].toLowerCase()]} 
                           style={styles.imagem} 
                         />
                         <Text
                           style={[
                             styles.opcaoTexto,
                             { fontSize: fontSize },
-                            opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] ? { color: 'white' } : { color: 'black' }
+                            opcaoSelecionada === fases[questaoAtual].opcoes[index + 1] ? { color: 'white' } : { color: 'black' },
                           ]}
                         >
                           {fases[questaoAtual].opcoes[index + 1]}
                         </Text>
                       </TouchableOpacity>
                     )}
-                 </View>
-              );
-            }
-            return null;
-          })}
+                  </View>
+                );
+              }
+              return null;
+            })}
 
-          {opcaoSelecionada && (
-            <TouchableOpacity  onPress={verificarResposta}  
-            style={{
-              position: 'absolute', 
-              right: 20, // margem da borda direita
-              bottom: 0, // margem da borda inferior
-              padding: 10, 
-              backgroundColor: '#42d7f5', // cor de fundo
-              borderRadius: 5, 
-              width:200,
-              
-            }}
-            >
-              <Text style={{color:'white', fontSize:fontSize, textAlign:'center', fontWeight:500}}>responder</Text>
+            {opcaoSelecionada && (
+              <TouchableOpacity 
+                onPress={verificarResposta}  
+                style={{
+                  position: 'absolute', 
+                  right: 20, 
+                  bottom: 0, 
+                  padding: 10, 
+                  backgroundColor: '#42d7f5', 
+                  borderRadius: 5, 
+                  width: 200,
+                }}
+              >
+                <Text style={{ color: 'white', fontSize: fontSize, textAlign: 'center', fontWeight: '500' }}>
+                  responder
+                </Text>
+              </TouchableOpacity>
+            )}
+          </>
+        ) : (
+          <View style={{ position:'absolute', bottom:78,left:50 }}>
+            {mostarRobo()} 
+            <TouchableOpacity  onPress={reiniciarQuiz} style={{backgroundColor:'#EF065D', }}>
+              <Text style={{color:'white', fontSize:fontSize, fontWeight:'bold',textAlign:'center', padding:10, borderRadius:20}}>Recomeçar Quiz</Text>
             </TouchableOpacity>
-          )}
-        </>
-      ) : (
-        <View>
-          <Text style={[styles.result, {color:textColor}]}>Você acertou {pontos} de {fases.length} perguntas.</Text>
-          <Button title="Recomeçar Quiz" onPress={reiniciarQuiz} />
-        </View>
-      )}
+          </View>
+        )}
       </View>
-
-      {/* Renderiza o tutorial se `showTutorial` for verdadeiro */}
-      {showTutorial && <Tutorial />}
-      
-         {/*--------------------------------------Botão de Ajuda aqui -------------------------------------------------- */}
-       
+            {/* Renderiza o tutorial se `showTutorial` for verdadeiro */}
+      {showTutorial && <Tutorial />}       
          {next == 2? (
         <View style={{position:'absolute', bottom:20, left:20, padding:20, backgroundColor:'white',borderRadius:100, zIndex:next == 2 ?99:0}}>
           <View style={{backgroundColor:'#EF065D', borderRadius:100, width:50, height:50,}}>
@@ -465,7 +501,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   questionTitle: {
-    marginTop:50,
+    marginTop:-50,
+    marginBottom:50,
     textAlign: 'center',
     color: 'black',
     fontWeight: 'bold',
