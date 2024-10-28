@@ -35,9 +35,9 @@ export default function Quiz({ navigation }) {
   const [showTutorial, setShowTutorial] = useState(true);
   const [next, setNextTutorial] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
-  const [respostas, setRespostas] = useState(Array(fases.length).fill(''));
-  const [pontos, setPontos] = useState(0);
+  const [pontos, setPontos] = useState(1);
   const [quizFinalizado, setQuizFinalizado] = useState(false);
+  const [questaoAtual, setQuestaoAtual] = useState(0); // Estado para rastrear a questão atual
 
   useEffect(() => {
     handleAutoLogin();
@@ -189,6 +189,8 @@ const verificarResposta = (index, opIndex) => {
     if (respostaSelecionada === respostaCorreta) {
         Alert.alert('Resposta correta!');
         setPontos(pontos + 1);
+        setQuestaoAtual(index + 1); // Atualiza a questão atual quando a resposta está correta
+
     } else {
         Alert.alert(`Resposta incorreta! A resposta correta é: ${respostaCorreta}`);
     }
@@ -217,14 +219,15 @@ const verificarResposta = (index, opIndex) => {
             if (!showAll && index > 0) return null;
             return (
               <View key={index} style={styles.groupContainer}>
-                {grupo.map((fase) => (
-                  <View 
-                    key={fase.id} 
-                    style={[styles.grayBar, { backgroundColor: fase.id === 1 ? '#2c2d30' : '#c8cacf' }]}
-                  >
-                    {fase.id === 1 && <Text style={styles.text}></Text>}
-                  </View>
-                ))}
+                {grupo.map((fase, index) => (
+                <View key={index} style={styles.groupContainer}>
+                    <View 
+                        style={[styles.grayBar, { backgroundColor: fase.id === questaoAtual ? 'black' : fase.id <= pontos ? '#2c2d30' : '#c8cacf' }]}
+                    >
+                        <Text style={styles.text}>{fase.pergunta}</Text>
+                    </View>
+                </View>
+            ))}
               </View>
             );
           })}
