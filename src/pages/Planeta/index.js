@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react'; // Importar useState do React
 import { useAccessibility } from '../../context/AccessibilityContext/';
 import { View, Text, Button, Image, FlatList, StyleSheet ,ImageBackground ,ScrollView,TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Speech from 'expo-speech';
 
 export default function Planeta({ route, navigation }) {
   const { planeta } = route.params;
+
+
 
   const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
 
@@ -119,6 +122,35 @@ export default function Planeta({ route, navigation }) {
     }
   } 
 
+
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const startSpeaking = (texto) => {
+    Speech.speak(texto, {
+      onDone: () => setIsSpeaking(false),
+      language: 'pt-BR',
+      voice: 'pt-BR-Standard-B', // Corrigido para português
+      rate: 0.9,
+    });
+    setIsSpeaking(true);
+  };
+
+  const pauseSpeaking = () => {
+    Speech.stop();
+    setIsSpeaking(false);
+  };
+
+  const resumeSpeaking = () => {
+    if (!isSpeaking) {
+      speakPlaneta();
+    }
+  };
+
+  const speakPlaneta = () => {
+    const texto = `${planetaData.title}. ${planetaData.description}`;
+    startSpeaking(texto);
+  };
+
   const planetaData = planetas.find(p => p.title === planeta.title);
   if (!planetaData) {
     return <Text>Planeta não encontrado</Text>;
@@ -154,7 +186,20 @@ export default function Planeta({ route, navigation }) {
           <Image source={getPlanetaImage(planetaData.title)} style={[styles.planetaImage, isSaturno && styles.saturnoImage]}/>
         </ImageBackground>
       </View>
-      <Text style={[styles.title, {color:textColor}]}>{planetaData.title}</Text>
+      <View>
+      <View style={{ flexDirection: 'row', paddingBottom: 40 , paddingHorizontal:40, justifyContent:'space-between'}}>
+        <Text style={[styles.title, {color:textColor}]}>{planetaData.title}</Text>
+        {isSpeaking ? (
+          <TouchableOpacity onPress={pauseSpeaking} style={{ width: '20%', padding: 10, backgroundColor: 'white', borderRadius: 50, borderWidth: 2, borderColor: 'black' }}>
+            <Icon name="pause" size={30} color={'black'} style={{ margin: 'auto' }} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={resumeSpeaking} style={{ width: '20%', padding: 10, backgroundColor: 'white', borderRadius: 50, borderWidth: 2, borderColor: 'black' }}>
+            <Icon name="play" size={30} color={'black'} style={{ margin: 'auto' }} />
+          </TouchableOpacity>
+        )}
+     </View>
+      </View>
       <Text style={[styles.description, {fontSize: fontSize}, {color:textColor}]}>{planetaData.description}</Text>      
       {/* Exibição das imagens usando FlatList */}
 
@@ -199,6 +244,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     marginLeft:25,
+  },
+  speakButton: {
+    padding: 10,
+    backgroundColor: 'blue', // Altere a cor conforme necessário
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
   },
   description: {
     fontSize: 16,

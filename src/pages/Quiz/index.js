@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity , Modal, Pressable, Button,Alert} from 'react-native';
+import * as Speech from 'expo-speech';
+
 import { useState, useEffect } from 'react';
 import { useAccessibility } from '../../context/AccessibilityContext/';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -50,7 +52,8 @@ export default function Quiz({ navigation }) {
   const [questaoAtual, setQuestaoAtual] = useState(0);
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
   const [modalVisible2, setModalVisible2] = useState(false);
-  
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   useEffect(() => {
     handleAutoLogin();
   }, []);
@@ -247,6 +250,37 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
       );
     }
   }
+
+  const startSpeaking= () => {
+    const perguntaAtual = fases[questaoAtual];
+    const texto = `${perguntaAtual.pergunta}. As opções são: ${perguntaAtual.opcoes.join(', ')}`;
+    
+    Speech.speak(texto, {
+      onDone: () => setIsSpeaking(false),
+      language:'pt-BR',
+      voice: 'en-US-Standard-B',
+      rate: 0.9,
+    });
+    setIsSpeaking(true);
+  };
+
+
+  const pauseSpeaking = () => {
+    Speech.stop();
+    setIsSpeaking(false);
+  };
+
+  const resumeSpeaking = () => {
+    if (!isSpeaking) {
+      startSpeaking(fases[questaoAtual].pergunta);
+    }
+  };
+
+  const readQuestion = () => {
+    const { pergunta, ajuda } = fases[questaoAtual];
+    startSpeaking(`${pergunta}. ${ajuda}`);
+  };
+
   return (
     <View style={[styles.container, { paddingTop: 25, backgroundColor }]}>
 
@@ -312,6 +346,18 @@ const ajudaTexto = fases[questaoAtual].ajuda; // Texto de ajuda da pergunta atua
            <Text style={[styles.questionTitle, { fontSize, color: textColor }]}>
                 {fases[questaoAtual].pergunta}
             </Text>
+            <View style={{flexDirection:'row',paddingBottom:40}}>
+              {isSpeaking ? (
+                <TouchableOpacity onPress={pauseSpeaking}  style={{width:'16%',padding:10, backgroundColor: 'white', borderRadius:50, borderWidth:2, borderColor:'black'}}>
+                  <Icon name="pause" size={30} color={'black'} style={{margin:'auto'}} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={resumeSpeaking}  style={{width:'16%',padding:10, backgroundColor: 'white', borderRadius:50, borderWidth:2, borderColor:'black'}}>
+                  <Icon name="play" size={30} color={'black'} style={{margin:'auto'}} onPress={readQuestion} />
+                </TouchableOpacity>
+              )}
+            </View>
+           
             {fases[questaoAtual].opcoes.map((opcao, index) => {
               if (index % 2 === 0) {
                 return (
