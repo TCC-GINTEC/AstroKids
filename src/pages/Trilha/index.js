@@ -1,14 +1,28 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity ,Image } from 'react-native';
 import { useAccessibility } from '../../context/AccessibilityContext/';
 import Icon from 'react-native-vector-icons/Ionicons';
 const fases = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 export default function Trilha({ navigation }) {
+  
+  const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
+
+  // Definindo as cores dependendo do modo de acessibilidade
+  const backgroundColor = isHighContrast ? '#000' : '#FFF';
+  const textColor = isHighContrast ? '#FFF' : '#000';
+
   return (
     <View style={styles.container}>
-        <View style={styles.containerMenu}>
+  
+        <View style={{flexDirection:'row', marginTop:20, alignItems:'center', justifyContent:'space-between', position:'relative'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton,{position:'absolute', left:0}]}>
+                <Image 
+                  source={require('../../../assets/seta-branca.png')}
+                  style={{ width: 30, height: 30, marginLeft: -5}}
+                />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Perfil')} >
-            <Icon name="menu" size={50} style={{marginTop:20, marginBottom:20}}  color={'white'} />
+            <Icon name="menu" size={50} style={{marginTop:20, marginBottom:20, marginLeft:300}}  color={'white'} />
           </TouchableOpacity>
         </View>
       {fases.map((f) => {
@@ -34,7 +48,6 @@ const styles = StyleSheet.create({
     width:'100%',
     marginTop:30,
     marginRight:50,
-    alignItems:'flex-end'
   },
   botao: {
     backgroundColor: '#8A2BE2', // Cor do botão
@@ -52,5 +65,12 @@ const styles = StyleSheet.create({
   idfase: {
     color: 'white',
     fontSize: 18,
-  }
+  },
+  botaoVoltar: {
+    position: 'absolute',
+    top: 60,
+    left: 40,
+    width: 40,
+    height: 40,
+  },
 });
