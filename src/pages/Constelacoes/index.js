@@ -1,4 +1,7 @@
 import React from 'react';
+import { useAccessibility } from '../../context/AccessibilityContext/';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import {
   SafeAreaView,
   View,
@@ -54,20 +57,24 @@ const data = [
 
 
 export default function Constelacoes({ navigation }) {
+  const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
+
+  // Definindo as cores dependendo do modo de acessibilidade
+  const backgroundColor = isHighContrast ? '#000' : '#FFF';
+  const textColor = isHighContrast ? '#FFF' : '#000';
 
   const Item = ({ dados }) => (
     <TouchableOpacity onPress={() => navigation.navigate('Constelacao', { constelacao: dados })} style={styles.item}>
-      <View style={styles.box1}>
+      <View style={[styles.box1, {backgroundColor}]}>
         <View style={styles.circleImage}>
           <Image source={dados.img} style={styles.imageConstelacoes} />
         </View>
         <View style={styles.containerTexto}>
-          <Text style={styles.textTitle}>{dados.title}</Text>
-          <Text style={styles.textDescription1}>{dados.resume}</Text>
+          <Text style={[styles.textTitle,{textAlign:'center', color: textColor}]}>{dados.title}</Text>
+          <Text style={[styles.textDescription1,{fontSize: fontSize,textAlign:'center', color: textColor}]}>{dados.resume}</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 10, paddingLeft: 30 }}>
-          <Text style={styles.textoExplicacao}>Aperte para ver mais</Text>
-          <Image source={require('../../../assets/setinha.png')} style={styles.seta} />
+          <Text style={[styles.textoExplicacao, {fontSize:fontSize*0.9,color: textColor}]}>Aperte para ver mais</Text>
         </View>
       </View>
       <View style={styles.box2} />
@@ -77,12 +84,15 @@ export default function Constelacoes({ navigation }) {
 
   return (
     <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
+        <TouchableOpacity style={{ position:'absolute',top:20, right:30,marginBottom:20,}} onPress={() => navigation.navigate('Perfil')}>
+          <Icon name="menu" size={50} color={'white'} />
+        </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.botaoVoltar}>
         <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao} />
       </TouchableOpacity>
       <View style={styles.container}>
         <View>
-          <Text style={styles.tituloConstelacao}>História das constelações</Text>
+          <Text style={[styles.tituloConstelacao, {fontSize:fontSize * 1.4, marginTop:90}]}>História das constelações</Text>
           <SafeAreaView style={styles.safeArea}>
             <FlatList
               data={data}
@@ -93,9 +103,10 @@ export default function Constelacoes({ navigation }) {
               decelerationRate='fast'
               renderItem={({ item }) => <Item dados={item} />}
               keyExtractor={item => item.id}
+              style={{marginTop:-20}}
             />
           </SafeAreaView>
-          <Text style={styles.textodrag}>Arraste os planetas para o lado</Text>
+          <Text style={[styles.textodrag, {fontSize: fontSize, color: 'white' }]}>Arraste os planetas para o lado</Text>
         </View>
       </View>
     </ImageBackground>
@@ -133,7 +144,8 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 35,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginTop:-20,
   },
   containerTexto: {
     position: 'relative',
@@ -141,7 +153,6 @@ const styles = StyleSheet.create({
   },
   textDescription1: {
     fontSize: 15,
-    opacity: 0.5
   },
   textDescription2: {
     fontSize: 16,
@@ -185,54 +196,23 @@ const styles = StyleSheet.create({
   },
   box1: {
     width: 320,
+    height:300,
+    height:'auto',
     backgroundColor: 'white',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',  // Torna o box1 absoluto
-    top: '20%',  // Centraliza verticalmente com um deslocamento
+    top: '16%',  // Centraliza verticalmente com um deslocamento
     zIndex: 10,  // Mantém o box1 acima dos outros    
     padding: 5,
     paddingVertical: 17
   },
-  box2: {
-    width: 260,
-    height: 200,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    backgroundColor: '#E8F1F2',
-    position: 'absolute',  // Torna o box2 absoluto
-    top: '50%',  // Coloca o box2 abaixo do box1
-    zIndex: 9,  // Mantém o box2 abaixo do box1
-    marginTop: -58,  // Ajusta o deslocamento vertical
-  },
-  box3: {
-    width: 220,
-    height: 200,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    backgroundColor: 'rgba(194, 119, 237,0.2)',
-    position: 'absolute',  // Torna o box3 absoluto
-    top: '65%',  // Coloca o box3 abaixo do box2
-    zIndex: 8,  // Mantém o box3 abaixo do box2
-    marginTop: -120,  // Ajusta o deslocamento vertical
-  },
-  box4: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-  },
   textoExplicacao: {
     textAlign: 'center',
-    position: 'absolute',
-    top: -30,
-    right: 10,
     color: '#00C1CF',
+    marginRight:15,
+    marginTop:-40,
   },
   seta: {
     marginTop: 25,
@@ -260,9 +240,9 @@ const styles = StyleSheet.create({
     width: 250,
     color: 'white',
     fontSize: 20,
-    margin: 'auto',
+    marginHorizontal: 'auto',
     position: "absolute",
-    bottom: 60,
+    bottom: 30,
     alignSelf: "center"
   }
 });

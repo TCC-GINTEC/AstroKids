@@ -12,7 +12,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.astrokids.AstroKids"  
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +27,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "2a10fd91-0807-4822-8351-3121abba20c5"
+        "projectId": "2be135e3-d291-4986-9750-18a377bd1f8d"
       }
     }
   }

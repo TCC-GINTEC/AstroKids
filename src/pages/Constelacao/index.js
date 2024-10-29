@@ -1,4 +1,6 @@
 import React from 'react';
+import { useAccessibility } from '../../context/AccessibilityContext/';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
     SafeAreaView,
     View,
@@ -13,21 +15,28 @@ import {
 
 const Constelacao = ({ route, navigation }) => {
     const { constelacao } = route.params;
-    
+    const { fontSize, titleFontSize, isHighContrast } = useAccessibility();
+
+    // Definindo as cores dependendo do modo de acessibilidade
+    const backgroundColor = isHighContrast ? '#000' : '#FFF';
+    const textColor = isHighContrast ? '#FFF' : '#000';
     return (
         <ImageBackground source={require('../../../assets/background2.png')} resizeMode="cover" style={styles.image}>
+            <TouchableOpacity style={{ position:'absolute',top:30, right:30,marginBottom:20}} onPress={() => navigation.navigate('Perfil')}>
+                <Icon name="menu" size={50} color={textColor} />
+             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.botaoVoltar}>
                 <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao} />
             </TouchableOpacity>
-            <View style={styles.container}>
-                <View style={styles.apresentacao}>
+            <View style={[styles.container]}>
+                <View style={[styles.apresentacao]}>
                     <TouchableOpacity onPress={() => { navigation.navigate("Constelacoes") }} style={styles.botaoVoltar}>
                         <Image source={require('../../../assets/seta-branca.png')} style={styles.imagemApresentacao} />
                     </TouchableOpacity>
                     <Image source={constelacao.img} style={styles.apresentacaoImagem} />
-                    <View style={styles.box4}>
-                        <Text style={{ fontSize: 50, fontWeight: 'bold' }}>{constelacao.title}</Text>
-                        <Text style={styles.textDescription2}>{constelacao.description}</Text>
+                    <View style={[styles.box4,{backgroundColor}]}>
+                        <Text style={{ fontSize: 50, fontWeight: 'bold',color:textColor }}>{constelacao.title}</Text>
+                        <Text style={[styles.textDescription2, {color:textColor, fontSize:fontSize}]}>{constelacao.description}</Text>
                     </View>
                 </View>
             </View>
